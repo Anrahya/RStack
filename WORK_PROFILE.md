@@ -8,6 +8,9 @@ profile, a workflow, a work graph or verification receipts. A utility called dur
 an active task handles its requested output and leaves that task paused until the
 user separately requests continued work. Preserve facts, uncertainty and permissions.
 
+Apply these preferences to engineering work by default, not only on request. A
+request that changes code, configuration, data or a documented decision is
+engineering work; general chatter, quick questions and prose editing are not.
 
 Prefer trustworthy outcomes over visible activity. Lead with the result and its
 evidence; keep progress updates short enough to be useful.

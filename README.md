@@ -1,4 +1,4 @@
-# R-Stack 0.2.0-rc.2
+# R-Stack 0.2.0-rc.3
 
 A host-neutral engineering workflow with an optional toolbox for learning, research,
 writing and focused development help. The fourteen engineering routes remain; the
@@ -6,6 +6,10 @@ seventeen utility entry points run independently. This release is an **evaluatio
 candidate**, not a measured claim of model uplift.
 
 ## Two independent ways to use it
+
+R-Stack is the default route for engineering work in a repository: bug fixes,
+features, refactors, migrations, architecture and design decisions. It stays out
+of general chatter, quick questions, teaching and standalone utility requests.
 
 Use `r-stack-mode` for verification-driven engineering. Use `bro`, `teach`, `research`,
 `unslop` or another [toolbox skill](docs/TOOLBOX.md) for focused help. A toolbox call
@@ -28,6 +32,13 @@ constraints, chooses one primary playbook and adds only relevant capabilities.
 The active host retains permissions, executors, resource limits and isolation.
 Native skill syntax varies by host; installing files alone does not demonstrate
 that the host loaded or invoked them.
+
+## What changed in rc.3
+
+- R-Stack is the default route for engineering work rather than an opt-in one. The
+  mode skill, work profile and README now state the boundary: code, configuration,
+  data or a documented decision is engineering work; general chatter, quick
+  questions, teaching, prose editing and standalone utilities are not.
 
 ## What changed in rc.2
 

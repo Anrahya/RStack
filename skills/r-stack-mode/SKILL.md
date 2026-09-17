@@ -1,9 +1,19 @@
 ---
 name: r-stack-mode
-description: Run verification-driven engineering when requested or selected for actual engineering work. Not for standalone utilities, ordinary knowledge questions, teaching or general research.
+description: Apply verification-driven engineering to repository work: bug fixes, features, refactors, migrations, architecture and design decisions. The default for engineering tasks; skip general chatter, quick questions, one-line edits and standalone utilities.
 ---
 
 # R-Stack mode
+
+## Default scope
+
+Apply this workflow to engineering work by default, not only when asked. Treat a
+request as engineering work when it changes code, configuration, data or schema in
+a repository, or when it plans or reviews such a change.
+
+Skip it for general chatter, quick factual questions, teaching, explanations,
+prose editing, standalone utility requests and general research. Conversation
+inside a repository is not an engineering task on its own.
 
 ## Standalone utility exception
 
