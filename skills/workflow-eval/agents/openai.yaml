@@ -1,0 +1,7 @@
+interface:
+  display_name: "Workflow Eval"
+  short_description: "Compare agent workflows with blinded realistic tasks"
+  default_prompt: "Use $workflow-eval to compare this workflow change before promoting it."
+policy:
+  allow_implicit_invocation: true
+

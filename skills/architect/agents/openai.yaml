@@ -1,0 +1,6 @@
+interface:
+  display_name: "Architect"
+  short_description: "Settle usage, ownership, types, and boundaries"
+  default_prompt: "Use $architect to settle this boundary before implementation."
+policy:
+  allow_implicit_invocation: true

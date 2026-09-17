@@ -1,0 +1,6 @@
+interface:
+  display_name: "Shape"
+  short_description: "Resolve intent, domain terms, and decision dependencies"
+  default_prompt: "Use $shape to resolve the important decisions before implementation."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,24 @@
+{
+  "work_id": "W-001",
+  "status": "PASS",
+  "result": "The public behavior is present.",
+  "evidence": [
+    {
+      "id": "E-001",
+      "acceptance": "A-001",
+      "claim": "run() returns the expected value",
+      "basis": "observed",
+      "action_or_source": "public-path check",
+      "observed_result": "passed",
+      "location_or_artifact": "artifacts/public-path.txt",
+      "fingerprint": "tree-abc"
+    }
+  ],
+  "mutations": [
+    "src/owned/run.ts"
+  ],
+  "rejected": [],
+  "uncertainty": [],
+  "handoff": []
+}
+

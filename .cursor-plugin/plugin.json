@@ -1,0 +1,20 @@
+{
+  "name": "r-stack",
+  "version": "0.1.0",
+  "description": "Host-neutral engineering workflow: alignment, bounded orchestration, and fresh proof.",
+  "author": {
+    "name": "Anrahya"
+  },
+  "license": "MIT",
+  "keywords": [
+    "r-stack",
+    "workflow",
+    "verification",
+    "architecture",
+    "agent-skills"
+  ],
+  "logo": "assets/r-stack-icon.png",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "commands": "./commands/"
+}

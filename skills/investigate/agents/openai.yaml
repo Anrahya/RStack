@@ -1,0 +1,6 @@
+interface:
+  display_name: "Investigate"
+  short_description: "Trace behavior, history, and root causes"
+  default_prompt: "Use $investigate to establish how this works and why."
+policy:
+  allow_implicit_invocation: true

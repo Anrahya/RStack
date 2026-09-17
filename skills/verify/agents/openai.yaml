@@ -1,0 +1,6 @@
+interface:
+  display_name: "Verify"
+  short_description: "Prove the final change on the consequential path"
+  default_prompt: "Use $verify to prove this result against the final tree."
+policy:
+  allow_implicit_invocation: true

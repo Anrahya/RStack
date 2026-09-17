@@ -1,0 +1,6 @@
+interface:
+  display_name: "Resume"
+  short_description: "Resume prior work without repeating completed steps"
+  default_prompt: "Use $resume to reconstruct this task and continue it."
+policy:
+  allow_implicit_invocation: true

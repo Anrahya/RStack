@@ -1,0 +1,57 @@
+{
+  "decisions": [
+    {
+      "id": "D-001",
+      "text": "The shared boundary has one owner"
+    }
+  ],
+  "units": [
+    {
+      "id": "W-001",
+      "role": "implementer",
+      "outcome": "Implement the bounded public behavior",
+      "parent_outcome": "Deliver the requested feature",
+      "read": [
+        "src/"
+      ],
+      "write": [
+        "src/owned/"
+      ],
+      "excluded": [
+        "src/other/"
+      ],
+      "context": [
+        "AGENTS.md",
+        "src/owned/current.ts"
+      ],
+      "accepted_decisions": [
+        "D-001"
+      ],
+      "known_facts": [
+        "run() is the public entry point"
+      ],
+      "assumptions_to_test": [],
+      "requires": [],
+      "produces_for": [
+        "final"
+      ],
+      "authority": "Edit only src/owned/",
+      "acceptance": [
+        {
+          "id": "A-001",
+          "predicate": "run() exposes the requested behavior",
+          "verify": {
+            "action": "run the public-path check",
+            "expected": "the expected value is observed"
+          }
+        }
+      ],
+      "stop_if": [
+        "The public contract differs from D-001"
+      ],
+      "forbidden": [],
+      "report": "Return an R-Stack evidence receipt"
+    }
+  ]
+}
+

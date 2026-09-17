@@ -1,0 +1,6 @@
+interface:
+  display_name: "Prototype"
+  short_description: "Settle one decision with a disposable experiment"
+  default_prompt: "Use $prototype to answer this question empirically."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "R-Stack Mode"
+  short_description: "Route engineering work through evidence-first playbooks"
+  default_prompt: "Use $r-stack-mode to route this task and prove the outcome."
+policy:
+  allow_implicit_invocation: true

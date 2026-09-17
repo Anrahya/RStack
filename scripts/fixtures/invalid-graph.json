@@ -1,0 +1,73 @@
+{
+  "decisions": [],
+  "units": [
+    {
+      "id": "W-001",
+      "role": "implementer",
+      "outcome": "First change",
+      "parent_outcome": "Demonstrate rejection",
+      "read": [],
+      "write": [
+        "src/shared/"
+      ],
+      "excluded": [],
+      "context": [],
+      "accepted_decisions": [],
+      "known_facts": [],
+      "assumptions_to_test": [],
+      "requires": [],
+      "produces_for": [
+        "final"
+      ],
+      "authority": "Edit the declared path",
+      "acceptance": [
+        {
+          "id": "A-001",
+          "predicate": "First result exists",
+          "verify": {
+            "action": "inspect it",
+            "expected": "present"
+          }
+        }
+      ],
+      "stop_if": [],
+      "forbidden": [],
+      "report": "Return a receipt",
+      "model": "forbidden-policy"
+    },
+    {
+      "id": "W-002",
+      "role": "implementer",
+      "outcome": "Second change",
+      "parent_outcome": "Demonstrate rejection",
+      "read": [],
+      "write": [
+        "src/shared/file.ts"
+      ],
+      "excluded": [],
+      "context": [],
+      "accepted_decisions": [],
+      "known_facts": [],
+      "assumptions_to_test": [],
+      "requires": [],
+      "produces_for": [
+        "final"
+      ],
+      "authority": "Edit the declared path",
+      "acceptance": [
+        {
+          "id": "A-002",
+          "predicate": "Second result exists",
+          "verify": {
+            "action": "inspect it",
+            "expected": "present"
+          }
+        }
+      ],
+      "stop_if": [],
+      "forbidden": [],
+      "report": "Return a receipt"
+    }
+  ]
+}
+

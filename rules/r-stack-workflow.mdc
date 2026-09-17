@@ -1,0 +1,32 @@
+---
+description: Use R-Stack as the engineering workflow for non-trivial software work
+alwaysApply: true
+---
+
+# R-Stack engineering workflow
+
+For non-trivial software work (investigate, shape, design, plan, feature, bug
+fix, refactor, performance, prototype, operational change, review, resume,
+verify), use R-Stack as the front door.
+
+1. Before mutating, load `r-stack-mode` by reading its `SKILL.md` and load
+   `WORK_PROFILE.md`. Naming a skill is not execution.
+2. Write a compact alignment capsule: outcome, proof, observed, assumed,
+   constraints, non-goals, open decisions, selected playbook and rigor.
+3. Pick one playbook. Resume and long-run modify another primary route.
+   Rigor is Direct, Deliberate, or Program from uncertainty, reversibility,
+   and impact — not task size. Skip ceremony when the path and proof are
+   already obvious.
+4. Load each required skill by reading that skill's `SKILL.md` in full, one
+   at a time: investigate, shape, architect, prototype, orchestrate, verify,
+   review, resume, reflect, workflow-eval.
+5. Project instructions (`AGENTS.md`, `CLAUDE.md`, repo rules) own local
+   architecture, commands, permissions, and delivery. The user request owns
+   outcome and scope. Do not choose or recommend executor/model config.
+6. Close against evidence produced after the last relevant mutation. Report
+   `complete`, `inconclusive`, or `blocked`. Do not upgrade uncertainty.
+
+Plugin paths (load from the installed copy; source of truth is `~/plugins/r-stack`):
+
+- `/home/anrahya/.cursor/plugins/local/r-stack/skills/r-stack-mode/SKILL.md`
+- `/home/anrahya/.cursor/plugins/local/r-stack/WORK_PROFILE.md`
