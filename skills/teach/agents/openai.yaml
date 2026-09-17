@@ -1,0 +1,6 @@
+interface:
+  display_name: "Teach"
+  short_description: "Help the user understand a concept, paper, system or change"
+  default_prompt: "Use $teach for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

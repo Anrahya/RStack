@@ -1,55 +1,37 @@
 ---
 name: review
-description: Independently try to falsify an engineering change against its intent, project rules, callers, and real behavior. Use for elevated-risk changes, contested designs, pre-delivery review, or explicit requests for skeptical code review.
+description: Try to falsify a change against its original intent, surrounding system and claimed proof. Use for consequential changes, contested designs, explicit review requests and final delivery checks.
 ---
 
 # Review
 
-Review the final diff and surrounding system. Do not reward complexity or produce
-findings to fill a quota.
+Pin the comparison point and current artifact. Read the original request,
+acceptance contract, project constraints, full relevant diff and callers.
+An invalid base is a blocker. An empty diff may be a valid no-op: establish
+whether the requested state already exists rather than inventing changes.
 
-## Pin scope and evidence
+Run or inspect deterministic checks first. Separate these review questions:
 
-Resolve the fixed comparison point, exact head or workspace fingerprint,
-original outcome, acceptance claims, protected behavior, project rules, and
-claimed proof. Inspect the full diff and relevant callers. Fail early when the
-base is invalid or the requested diff is empty.
+- **Intent:** Does the artifact satisfy the original request without silently
+  changing scope, requirements or protected behavior?
+- **Engineering:** What input, lifecycle, state, authority or failure condition
+  breaks the behavior? Is ownership understandable and unnecessary complexity
+  absent?
+- **Proof:** Does each check exercise the changed boundary, assert an independent
+  expected result and identify the final relevant artifact?
 
-Run or inspect existing deterministic checks first. Report their failures
-directly; do not restate mechanically enforced rules as speculative prose.
+Use fresh contexts for independent axes when the risk warrants their cost and
+the host supports them. Record the actual provenance: **self-review**, **fresh
+context with the same executor**, **another executor**, **human review**, or
+**deterministic check**. Fresh context reduces priming; it does not guarantee
+independent errors. Serial role-play is self-review, not an independent panel.
 
-## Separate review axes
+Do not prime reviewers with a preferred verdict or another reviewer's findings.
+For each candidate issue establish the trigger, execution path, observable
+consequence, relationship to the change, and counterevidence. Agreement is a
+lead; resolve disagreements with a discriminating check, not a vote.
 
-For deliberate work, use fresh isolated contexts so one axis does not prime the
-others:
-
-- **Intent:** requested outcome, acceptance coverage, protected behavior, scope,
-  caller-visible semantics, and unrequested behavior.
-- **Engineering:** correctness, ownership, state transitions, failure and
-  recovery, concurrency, authority, security, cleanup, maintainability, project
-  standards, and tests.
-- **Proof:** whether claimed evidence exercises the changed boundary, asserts the
-  relevant result, matches the final fingerprint, and covers negative paths.
-
-Do not reveal one reviewer's findings to another before both finish. The harness
-supplies executor configuration.
-
-## Prove or dismiss findings
-
-For each candidate issue, establish:
-
-1. the triggering input or state;
-2. the execution path;
-3. the observable consequence;
-4. why the reviewed change introduced or failed to prevent it;
-5. validation, recovery, tests, or caller behavior that could disprove it.
-
-Agreement among reviewers increases attention, not truth. The coordinator checks
-the cited path and evidence, deduplicates related findings, and classifies each as
-blocking, actionable, consider, pre-existing, or dismissed. Challenge proposed
-remedies; when the safe fix is not established, describe the behavior that must
-change.
-
-Return `PASS`, `ISSUES`, or `INCONCLUSIVE`, followed by deterministic
-results, separate axis findings, evidence, dismissals, and proof gaps. A clean
-review is valid. Do not edit unless the user separately requested fixes.
+Return `PASS`, `ISSUES`, or `INCONCLUSIVE`, provenance, prioritized supported
+findings, dismissals and proof gaps. Do not manufacture findings to fill a quota.
+A clean review is valid. Do not edit unless fixes were authorized. When a fix
+changes the reviewed artifact, reopen the affected verification gate.

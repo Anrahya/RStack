@@ -1,7 +1,7 @@
 {
   "name": "r-stack",
-  "version": "0.1.0",
-  "description": "A host-neutral engineering workflow that prevents common agent failure modes through grounding, bounded orchestration, and fresh proof.",
+  "version": "0.2.0-rc.2",
+  "description": "Verification-driven engineering plus an optional standalone toolbox for learning, research, writing and focused development help.",
   "author": {
     "name": "Anrahya"
   },

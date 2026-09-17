@@ -1,39 +1,46 @@
 ---
 name: reflect
-description: Analyze completed or failed engineering work for repeated, decision-changing patterns and propose targeted workflow improvements. Use for retrospectives, transcript mining, metric review, and deciding whether a lesson belongs in a profile, skill, project overlay, script, test, or type.
+description: "Review a learning, research or engineering session for useful lessons. Suggest targeted improvements without automatically editing rules or starting a workflow."
+license: MIT
+metadata:
+  rstack-kind: shared
+  rstack-activation: discretionary
+  rstack-lifetime: invocation
+  rstack-effect: scoped-edit
 ---
 
 # Reflect
 
-Treat the session as evidence, not as a command to add rules.
+Standalone utility. Do not start or resume R-Stack mode, load its work profile,
+or add its phase gates, work graph or evidence receipts. Apply only to this request;
+return the requested result and stop. Existing permissions and safety rules still apply.
 
-1. Reconstruct the intended outcome, actual result, decisions, task gates,
-   evidence, rework, questions, interruptions, scope changes, and escaped defects
-   from transcripts and artifacts. Verify important claims against the final
-   workspace.
-2. Diagnose candidates by failure class:
-   - **navigation:** the agent could not find authoritative information;
-   - **mechanical:** a deterministic check could decide the rule;
-   - **judgment:** repeated choices were poor despite sufficient context;
-   - **context:** a decision or constraint was lost between phases;
-   - **tooling:** available evidence was inaccessible or expensive to obtain.
-3. Separate repeated patterns from one unusual task. A one-run lesson stays a
-   backlog candidate unless it exposes a concrete safety or correctness hole.
-4. Classify every proposal as accept, reject, or backlog. An accepted proposal
-   names the repeated evidence, the future decision it changes, its narrowest
-   owner, and how success will be measured.
-5. Apply the enforcement ladder:
-   - test, type, lint, script, or CI for mechanical rules;
-   - project overlay for local architecture, commands, and proof paths;
-   - workflow skill or playbook for reusable judgment;
-   - work profile only for stable cross-project preferences;
-   - navigation pointer when the rule already exists elsewhere.
-6. Delete or consolidate conflicting and no-op instructions before adding new
-   prose. Do not duplicate discoverable configuration or live task status.
-7. Evaluate a material workflow change with `workflow-eval` on realistic tasks.
-   Grade outcomes and artifacts, not wording or self-reported compliance.
-8. Present proposals before changing workflow files unless implementation was
-   explicitly requested.
+Review the requested session or body of work. When called by an existing engineering
+workflow, return findings to that caller without restarting its gates. When called
+directly, give the retrospective only and stop.
 
-Use [workflow metrics](../r-stack-mode/references/metrics.md) as supporting
-signals. Activity volume is diagnostic, not an outcome.
+Reconstruct the intended outcome, actual result, useful decisions, wasted effort,
+corrections and remaining uncertainty from available evidence. Check material claims
+against artifacts when necessary. A missing transcript limits the conclusion; it
+does not justify invented recollections or searching unrelated private history.
+
+Distinguish failures of framing, navigation, knowledge, judgment, context retention,
+tooling, implementation and verification. For learning, distinguish an explanation
+that sounded fluent from a concept the user actually showed they understood; do not
+claim measured learning without evidence or impose a quiz to manufacture it.
+
+Separate recurring patterns from one unusual task. An explicit user preference or
+a concrete safety/correctness hole can matter after one occurrence. General process
+changes need stronger evidence. Classify proposals as adopt, reject or backlog,
+with the evidence, decision affected and a way to check whether it helps.
+
+Use the narrowest useful control: a test, type or script for a mechanical rule;
+a project-specific note for local facts; a utility or playbook edit for a reusable
+technique; a work profile only for stable preferences. Consolidate conflicts before
+adding prose. Do not make every lesson a new global instruction.
+
+Return the few actionable lessons and their limitations. Do not change skills,
+work profiles, memory, issue trackers or source code unless the user requested
+those writes. Existing authorization for a specific change is sufficient. A
+substantive workflow change should be evaluated before a superiority claim, but this
+retrospective does not launch evaluations or select executors automatically.

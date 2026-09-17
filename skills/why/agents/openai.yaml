@@ -1,0 +1,6 @@
+interface:
+  display_name: "Why"
+  short_description: "Explain causes, design rationale or the reasons behind a result"
+  default_prompt: "Use $why for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

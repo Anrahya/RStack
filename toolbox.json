@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "version": "0.2.0-rc.2",
+  "policy": "available-not-mandatory",
+  "utilities": [
+    {
+      "name": "bro",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "response-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "unslop",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [
+        "references/patterns.md"
+      ],
+      "optional_helpers": []
+    },
+    {
+      "name": "technical-writing",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [
+        "references/guide.md"
+      ],
+      "optional_helpers": [
+        "unslop"
+      ]
+    },
+    {
+      "name": "teach",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": [
+        "how",
+        "why",
+        "research"
+      ]
+    },
+    {
+      "name": "how",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": [
+        "why",
+        "teach"
+      ]
+    },
+    {
+      "name": "why",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [
+        "references/evidence.md"
+      ],
+      "optional_helpers": [
+        "research"
+      ]
+    },
+    {
+      "name": "research",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "recall",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "show-me-your-work",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-write",
+      "dependencies": [],
+      "references": [
+        "references/log-guide.md"
+      ],
+      "optional_helpers": []
+    },
+    {
+      "name": "automate-me",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": [
+        "recall"
+      ]
+    },
+    {
+      "name": "reflect",
+      "kind": "shared",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "blast-radius",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "read-only",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "typescript-best-practices",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [
+        "references/patterns.md"
+      ],
+      "optional_helpers": []
+    },
+    {
+      "name": "no-comments",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "tdd",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    },
+    {
+      "name": "create-verification-skill",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-write",
+      "dependencies": [],
+      "references": [
+        "references/recipe.md"
+      ],
+      "optional_helpers": []
+    },
+    {
+      "name": "maintain-verification-skill",
+      "kind": "utility",
+      "activation": "discretionary",
+      "lifetime": "invocation",
+      "effect": "scoped-edit",
+      "dependencies": [],
+      "references": [],
+      "optional_helpers": []
+    }
+  ]
+}

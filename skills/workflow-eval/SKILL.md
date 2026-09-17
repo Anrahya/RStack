@@ -1,62 +1,38 @@
 ---
 name: workflow-eval
-description: Compare skills, prompts, playbooks, or engineering workflows with blinded realistic tasks and evidence-based scoring. Use before promoting an R-Stack change or when comparing R-Stack with another workflow.
+description: Test whether a workflow improves delivered outcomes under matched task, tool and resource conditions. Use before promoting instruction changes or making claims that R-Stack improves a model's engineering capability.
 ---
 
 # Workflow evaluation
 
-Measure behavior, not whether an agent repeats the instructions. R-Stack never
-selects the executors for an evaluation. Use the configuration supplied by the
-operator or harness and hold it constant across the arms being compared.
+Read [the evaluation protocol](../../docs/EVALUATION.md). Distinguish tests of
+R-Stack's own scripts from trials of an agent using R-Stack. Neither a valid
+receipt nor an attractive demonstration establishes model uplift.
 
-## Frame
+Freeze representative tasks, starting revisions, original acceptance criteria,
+protected holdout checks, severe-failure rules and resource accounting before
+running candidate variants. Compare the same supplied executor configuration
+with and without the workflow first. Changing the executor at the same time
+changes the question.
 
-1. State the behavior under test and the decision the result will inform.
-2. Choose realistic tasks that expose the suspected failure mode. Read
-   [v0 cases](references/v0-cases.md) when evaluating the full workflow; otherwise
-   build the smallest case that can discriminate the variants.
-3. Define the rubric, severe-failure conditions, resource accounting, and
-   promotion threshold before seeing candidate output. Read
-   [the scoring contract](references/scoring.md).
+Use isolated workspaces and independent repetitions. Randomize run order. Keep
+reference implementations and holdout grading outside candidate access, using
+actual filesystem or tool permissions rather than an instruction not to look.
+Do not imply perfect candidate blinding when named workflow files are visible.
+Blind outcome reviewers to variant and executor identity; balance presentation
+order and inspect disagreements rather than averaging them away.
 
-## Blind
+Run deterministic checks before subjective scoring. Judge the actual artifact
+and exercised behavior, not a polished report. Calibrate UI/UX or maintainability
+judgments with concrete examples and the user's priorities. A known severe
+failure cannot be rescued by a high mean aesthetic score.
 
-4. Create one isolated workspace per run. Candidate-visible paths, prompts, and
-   files must look like an ordinary project. Do not use words such as evaluation,
-   benchmark, rubric, candidate, judge, comparison, or test arm where candidates
-   can see them.
-5. Give every arm the same organic user request, starting state, tool access,
-   time boundary, and harness-supplied executor configuration. Change only the
-   workflow variant under study.
-6. Do not tell candidates that other runs exist. Do not ask them to enumerate
-   instructions or skills they followed.
+Record every attempt, failure, retry, human intervention and available cost.
+Compare clean completion, severe failures and total cost per clean completion.
+Report uncertainty over tasks, not an artificially large sample made by treating
+repeats of one task as unrelated new tasks.
 
-## Run and judge
-
-7. Run repetitions independently. Preserve outputs, diffs, commands, and
-   transcripts under sanitized labels.
-8. Run deterministic checks before judgment scoring. A functional failure is not
-   rescued by persuasive prose.
-9. Give a judge anonymized artifacts, the original request, and the predeclared
-   rubric. Hide workflow and executor identities. For paired variants, score both
-   in one pass on the same scale.
-10. Inspect transcripts for actual actions: sources opened, gates performed,
-    mutations made, verification freshness, and skipped steps. Self-report is not
-    evidence of process adherence.
-11. Read every result yourself. Investigate disagreements between deterministic
-    outcomes, judge scores, and coordinator assessment rather than averaging them
-    away.
-
-## Decide
-
-Return the task set, frozen conditions, arm labels, deterministic outcomes,
-criterion scores, severe failures, resource use, transcript findings,
-uncertainty, and one decision:
-
-- **promote:** the threshold passed without a new severe failure;
-- **hold:** signal is promising but underpowered or materially ambiguous;
-- **reject:** the variant regressed quality or added cost without earned benefit.
-
-Store evaluation artifacts outside product source unless the repository already
-has a designated evaluation area.
-
+Return `promote`, `hold`, or `reject` against the predeclared criterion, with
+per-task results, artifacts, uncertainty and limits. Three runs of a few tiny
+fixtures are smoke tests, not a universal superiority claim. Ablate unnecessary
+components instead of assuming every additional step improves the system.

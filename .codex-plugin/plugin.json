@@ -1,7 +1,7 @@
 {
   "name": "r-stack",
-  "version": "0.1.0+codex.20260915172302",
-  "description": "A host-neutral engineering workflow that prevents common agent failure modes through grounding, bounded orchestration, and fresh proof.",
+  "version": "0.2.0-rc.2",
+  "description": "Verification-driven engineering plus an optional standalone toolbox for learning, research, writing and focused development help.",
   "author": {
     "name": "Anrahya"
   },
@@ -16,16 +16,16 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "R-Stack",
-    "shortDescription": "Grounded engineering with bounded agents and fresh proof.",
-    "longDescription": "Routes software work through alignment, investigation, shaping, architecture, bounded orchestration, implementation, verification, review, continuity, and reflection. Project overlays supply local commands and invariants while the harness retains executor and model configuration.",
+    "shortDescription": "Grounded work with selective rigor and inspectable evidence.",
+    "longDescription": "Two independent entry paths: R-Stack mode for verification-driven engineering, and a discretionary toolbox for explanations, learning, research, writing and focused engineering utilities. Calling a utility does not activate the mode.",
     "developerName": "Anrahya",
     "category": "Developer Tools",
     "capabilities": [
       "Adaptive task routing",
-      "Subagent orchestration",
-      "Real-path verification",
-      "Project overlays",
-      "Blinded workflow evaluation"
+      "Selective domain lenses",
+      "Execution evidence capture",
+      "Project verification drivers",
+      "Workflow evaluation"
     ],
     "brandColor": "#FF6A00",
     "composerIcon": "./assets/r-stack-icon.png",

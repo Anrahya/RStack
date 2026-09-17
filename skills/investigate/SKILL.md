@@ -1,73 +1,41 @@
 ---
 name: investigate
-description: Establish how a software system behaves and why it has its current shape using source, history, runtime evidence, and falsifiable hypotheses. Use for engineering investigations, audits, explanations, root-cause grounding, and consequential "are we sure" questions.
+description: Establish how a system behaves or whether an engineering claim is supported using source, history, execution and falsifiable alternatives. Use for root-cause grounding, audits, comparisons and technical research before consequential decisions.
 ---
 
 # Investigate
 
-Own the answer. Stay read-only unless the active playbook separately authorizes
-implementation.
+Stay read-only unless the task separately authorizes a bounded experiment or
+implementation. Define the question and the observation that distinguishes the
+plausible answers. A diagnosis embedded in the request is one hypothesis.
 
-## Frame the evidence question
+For software behavior, trace the caller or event through input validation,
+authoritative state, control flow, side effects, failures and recovery to the
+observable result. Inspect actual callers, tests, configuration and runtime
+where they can contradict the apparent path. Filenames are navigation, not a
+runtime model.
 
-Pin the question to entry points, callers, symbols, boundaries, runtime symptoms,
-artifacts, or commits. State what observation would distinguish the plausible
-answers. Treat a cause or design explanation embedded in the request as one
-hypothesis, not privileged truth.
+For state, retries or concurrency, identify ownership and the important state
+transitions. Inspect the exact equality, identity, version or compare-and-set
+predicate. Vary each identity-bearing field independently, with an unchanged
+control; one aggregate example may conceal an omitted field.
 
-For a narrow question, investigate directly. For a broad subsystem, split two to
-four independent read-only lanes by subsystem, evidence source, or falsifiable
-hypothesis, then synthesize. Do not split one serial trace into artificial lanes.
+Inspect history when the reason for a constraint matters. Current code proves
+mechanics, not the motivation for its own design. Separate contemporaneous
+intent evidence from a present-day interpretation.
 
-## Trace mechanics
+For an external technical comparison or research answer, load the
+[research lens](../r-stack-mode/references/lenses/research.md). Do not force a
+caller trace onto a literature question. Open the primary source, pin its date
+or version and inspect contrary evidence before accepting a consequential claim.
 
-Start at the caller or external event and follow:
+Prefer a small probe with a clear prediction over more unfocused reading.
+Generate competing explanations only when a real uncertainty remains. A narrow
+question does not need a panel; independent read-only lanes must cover genuinely
+different sources, subsystems or hypotheses.
 
-1. input and boundary validation;
-2. central data shape and state owner;
-3. control flow and side effects;
-4. failure, cancellation, retry, and recovery;
-5. persisted or externally observable result.
-
-File names and type names are navigation, not a runtime model. Inspect callers,
-tests, configuration, and actual execution where they can contradict the
-apparent path.
-
-For stateful, retry, or concurrency defects, name the authoritative state at
-each phase and write the smallest transition table that distinguishes no
-change, deletion, replacement, conflict, and failure where applicable. Inspect
-the actual equality, identity, version, or compare-and-set predicate. Vary each
-field that predicate should recognize independently; aggregate examples often
-hide one omitted identity field.
-
-## Establish intent
-
-Use history only where current behavior cannot explain why a constraint exists.
-Inspect substantive commits, review discussion, issues, documentation, incident
-evidence, and available operational records. Code proves mechanics; it does not
-prove its own motivation.
-
-Record searched sources that returned nothing and sources that were unavailable.
-A missing source is an evidence gap, not a negative result.
-
-## Falsify and observe
-
-Write competing explanations with the prediction each makes. Prefer the probe
-that eliminates the most plausible explanations. Change one observed variable at
-a time. Run safe instrumentation or a reversible experiment when static evidence
-cannot settle an observable fact.
-
-## Investigation receipt
-
-Return:
-
-- question and interpretation;
-- traced mechanics with precise evidence pointers;
-- intent evidence, separated from present-day inference;
-- supported explanation and basis: observed, supported inference, or unknown;
-- rejected hypotheses and counterevidence;
-- contradictions and source gaps;
-- implications, gotchas, and the next discriminating action.
-
-A confident narrative without a traced path and falsification attempt is not
-completion.
+Return the answer, traced evidence, rejected explanations and counterevidence,
+observed facts versus supported inferences, source gaps, and the next
+observation that would change the conclusion. A failed search is not evidence
+that a thing does not exist. Stop when the decision's evidence threshold is met,
+not when every available source has been read.

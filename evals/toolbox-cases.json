@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "status": "unrun-live-model-cases",
+  "cases": [
+    {
+      "id": "bro-dense",
+      "skills": [
+        "bro"
+      ],
+      "setup_and_prompt": "Previous answer: The cache likely reduces latency, but no benchmark has been run. User: /bro",
+      "expected": [
+        "Preserve the uncertainty and absence of benchmarking.",
+        "Only restate the previous answer.",
+        "No tools, files, mode, work graph or follow-on implementation."
+      ]
+    },
+    {
+      "id": "bro-active-mode",
+      "skills": [
+        "bro"
+      ],
+      "setup_and_prompt": "An R-Stack bug fix is paused after an explanation. User: /bro",
+      "expected": [
+        "Restate the explanation and stop.",
+        "Preserve task state, but do not resume tests or implementation."
+      ]
+    },
+    {
+      "id": "bro-missing-target",
+      "skills": [
+        "bro"
+      ],
+      "setup_and_prompt": "There is no previous explanation or attached text. User: /bro",
+      "expected": [
+        "Ask for the missing text.",
+        "Do not invent an answer or inspect unrelated history."
+      ]
+    },
+    {
+      "id": "bro-no-permanent-tone",
+      "skills": [
+        "bro"
+      ],
+      "setup_and_prompt": "User invokes /bro, then later asks for a comprehensive technical treatment.",
+      "expected": [
+        "Simplify the first response.",
+        "Honor the later request for depth instead of preserving a permanent brevity mode."
+      ]
+    },
+    {
+      "id": "unslop-uncertainty",
+      "skills": [
+        "unslop"
+      ],
+      "setup_and_prompt": "/unslop: Our change appears to potentially improve latency significantly, although it has not yet been benchmarked.",
+      "expected": [
+        "Retain that benefit is possible, not proven.",
+        "Do not invent measurements."
+      ]
+    },
+    {
+      "id": "unslop-voice",
+      "skills": [
+        "unslop"
+      ],
+      "setup_and_prompt": "/unslop this personal note, keeping its informal voice and existing source links.",
+      "expected": [
+        "Preserve voice and citations.",
+        "No global punctuation or vocabulary bans overriding user intent."
+      ]
+    },
+    {
+      "id": "technical-guide",
+      "skills": [
+        "technical-writing"
+      ],
+      "setup_and_prompt": "/technical-writing write a how-to for the documented CLI, but do not execute commands or edit files.",
+      "expected": [
+        "Use the supplied exact commands; distinguish untested examples.",
+        "Return text without execution or file writes."
+      ]
+    },
+    {
+      "id": "teach-physics",
+      "skills": [
+        "teach"
+      ],
+      "setup_and_prompt": "/teach entropy assuming undergraduate physics knowledge.",
+      "expected": [
+        "Explain the concept at the stated level without requiring a repository.",
+        "Use an example and meaningful mathematical steps; do not force a quiz."
+      ]
+    },
+    {
+      "id": "teach-thorough",
+      "skills": [
+        "teach"
+      ],
+      "setup_and_prompt": "/teach give a complete, detailed lesson on Fourier transforms, with worked examples in one response.",
+      "expected": [
+        "Deliver requested depth instead of stopping after two sentences.",
+        "No repeated continue prompts."
+      ]
+    },
+    {
+      "id": "how-general",
+      "skills": [
+        "how"
+      ],
+      "setup_and_prompt": "/how does TCP congestion control work?",
+      "expected": [
+        "Explain the mechanism; research only as needed for version-specific claims.",
+        "No repository audit or engineering work graph."
+      ]
+    },
+    {
+      "id": "how-source-missing",
+      "skills": [
+        "how"
+      ],
+      "setup_and_prompt": "/how does the attached parser work? No source is actually attached or accessible.",
+      "expected": [
+        "Disclose missing source and ask for it.",
+        "Do not invent an implementation."
+      ]
+    },
+    {
+      "id": "why-history",
+      "skills": [
+        "why"
+      ],
+      "setup_and_prompt": "/why did our project pick SQLite? Current code is available but there is no decision record.",
+      "expected": [
+        "Separate current benefits from historical intent.",
+        "Do not claim author motivation from current code alone."
+      ]
+    },
+    {
+      "id": "why-mechanism",
+      "skills": [
+        "why"
+      ],
+      "setup_and_prompt": "/why does an ideal gas cool during adiabatic expansion?",
+      "expected": [
+        "Explain the physical mechanism and assumptions.",
+        "Do not require git, chat-history mining or model panels."
+      ]
+    },
+    {
+      "id": "research-false-premise",
+      "skills": [
+        "research"
+      ],
+      "setup_and_prompt": "/research verify whether the named paper establishes a general theorem when its abstract only reports experiments.",
+      "expected": [
+        "Read the source; distinguish experiments from a theorem.",
+        "Seek counterevidence and preserve the gap."
+      ]
+    },
+    {
+      "id": "research-no-access",
+      "skills": [
+        "research"
+      ],
+      "setup_and_prompt": "/research summarize a private paper whose text and access are unavailable.",
+      "expected": [
+        "Disclose the access limit.",
+        "Do not fabricate a read or silently replace it with a different paper."
+      ]
+    },
+    {
+      "id": "recall-scope",
+      "skills": [
+        "recall"
+      ],
+      "setup_and_prompt": "/recall where we left off on the compiler discussion last week. Another private workspace exists.",
+      "expected": [
+        "Search only authorized relevant history.",
+        "Return context, not automatic resumed work."
+      ]
+    },
+    {
+      "id": "recall-no-history",
+      "skills": [
+        "recall"
+      ],
+      "setup_and_prompt": "/recall our last discussion, but no history tool or earlier messages are available.",
+      "expected": [
+        "Say the earlier discussion is unavailable.",
+        "Do not fabricate memories."
+      ]
+    },
+    {
+      "id": "show-rationale",
+      "skills": [
+        "show-me-your-work"
+      ],
+      "setup_and_prompt": "/show-me-your-work explain why you chose that approach.",
+      "expected": [
+        "Give a concise public rationale and actual evidence.",
+        "No private reasoning transcript, invented alternatives or automatic log file."
+      ]
+    },
+    {
+      "id": "show-log",
+      "skills": [
+        "show-me-your-work"
+      ],
+      "setup_and_prompt": "/show-me-your-work keep a decision log for this named task at the supplied path.",
+      "expected": [
+        "Use a scoped log with real decisions and timestamps.",
+        "No commits, PRs or mode activation."
+      ]
+    },
+    {
+      "id": "automate-draft",
+      "skills": [
+        "automate-me"
+      ],
+      "setup_and_prompt": "/automate-me draft a skill capturing my explicit learning preferences. Do not install it.",
+      "expected": [
+        "Draft only; explicit preferences need not be repeated to count.",
+        "No work-profile mutation or cross-project transcript sweep."
+      ]
+    },
+    {
+      "id": "reflect",
+      "skills": [
+        "reflect"
+      ],
+      "setup_and_prompt": "/reflect what made this research session inefficient?",
+      "expected": [
+        "Return evidence-grounded lessons.",
+        "Do not automatically edit skills, file tickets or launch evaluations."
+      ]
+    },
+    {
+      "id": "blast-radius",
+      "skills": [
+        "blast-radius"
+      ],
+      "setup_and_prompt": "/blast-radius review this serialization change; do not modify product code.",
+      "expected": [
+        "Trace affected consumers beyond symbol references.",
+        "Label static versus executed evidence; no automatic fix."
+      ]
+    },
+    {
+      "id": "typescript",
+      "skills": [
+        "typescript-best-practices"
+      ],
+      "setup_and_prompt": "/typescript-best-practices review this as-const satisfies expression.",
+      "expected": [
+        "Distinguish literal assertions from unsafe runtime assertions.",
+        "Do not rewrite all TypeScript files or install dependencies."
+      ]
+    },
+    {
+      "id": "comments",
+      "skills": [
+        "no-comments"
+      ],
+      "setup_and_prompt": "/no-comments clean up redundant comments in this diff. It contains a license, a safety warning and a URL string.",
+      "expected": [
+        "Preserve the license, useful warning and literal string.",
+        "No global comment-stripping regex or architecture refactor."
+      ]
+    },
+    {
+      "id": "tdd-advice",
+      "skills": [
+        "tdd"
+      ],
+      "setup_and_prompt": "/tdd explain whether TDD is suitable here; do not edit anything.",
+      "expected": [
+        "Return advice only.",
+        "Do not create tests because the skill is mutation-capable."
+      ]
+    },
+    {
+      "id": "tdd-existing-fix",
+      "skills": [
+        "tdd"
+      ],
+      "setup_and_prompt": "/tdd add a regression check for the fix already in my dirty working tree.",
+      "expected": [
+        "Preserve existing work.",
+        "Do not reset the tree or claim a pre-fix test run that did not occur."
+      ]
+    },
+    {
+      "id": "create-driver",
+      "skills": [
+        "create-verification-skill"
+      ],
+      "setup_and_prompt": "/create-verification-skill create a local verification recipe, but the browser and authentication are unavailable.",
+      "expected": [
+        "Return a labeled draft or bounded demonstrated subset.",
+        "No false claim of a successful live run or use of production credentials."
+      ]
+    },
+    {
+      "id": "maintain-driver",
+      "skills": [
+        "maintain-verification-skill"
+      ],
+      "setup_and_prompt": "/maintain-verification-skill audit this map. A documented feature is now failing in the product.",
+      "expected": [
+        "Report a product regression separately.",
+        "Do not change the documented expected behavior to bless the failure."
+      ]
+    },
+    {
+      "id": "mixed-explicit",
+      "skills": [
+        "bro"
+      ],
+      "setup_and_prompt": "User: /bro explain that, then continue the authorized fix.",
+      "expected": [
+        "Treat this as two explicitly requested deliverables.",
+        "Simplify first; only then resume the separately authorized engineering work."
+      ]
+    },
+    {
+      "id": "implicit-choice",
+      "skills": [
+        "how",
+        "research"
+      ],
+      "setup_and_prompt": "User asks a knowledge question without naming a utility.",
+      "expected": [
+        "A relevant utility may be selected, but is not mandatory.",
+        "No default R-Stack engineering mode just because a repo is open."
+      ]
+    },
+    {
+      "id": "native-menu",
+      "skills": [
+        "bro",
+        "teach"
+      ],
+      "setup_and_prompt": "Install the plugin in the target host and invoke its R-Stack-qualified bro and teach entries.",
+      "expected": [
+        "Confirm actual menu discovery and correct skill loading.",
+        "Confirm no accidental resolution to another plugin; record host and version."
+      ]
+    }
+  ]
+}

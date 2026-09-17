@@ -1,98 +1,107 @@
-# R-Stack
+# R-Stack 0.2.0-rc.2
 
-<img src="assets/r-stack-icon.png" alt="R-Stack icon" width="128">
+A host-neutral engineering workflow with an optional toolbox for learning, research,
+writing and focused development help. The fourteen engineering routes remain; the
+seventeen utility entry points run independently. This release is an **evaluation
+candidate**, not a measured claim of model uplift.
 
-R-Stack is a host-neutral engineering workflow for capable coding agents. Its
-job is not to compensate for an incapable executor. It prevents repeatable
-workflow failures: premature coding, anchoring on the user's diagnosis, narrow
-tests, scope drift, unsafe parallel writes, stale proof, false completion, and
-lossy session pickup.
+## Two independent ways to use it
 
-Use `$r-stack-mode` as the front door for non-trivial engineering work. It
-aligns on the outcome, selects one playbook, loads only the techniques that
-playbook needs, and closes against fresh evidence. The operator or harness owns
-executor configuration; R-Stack never selects or recommends it.
+Use `r-stack-mode` for verification-driven engineering. Use `bro`, `teach`, `research`,
+`unslop` or another [toolbox skill](docs/TOOLBOX.md) for focused help. A toolbox call
+does not start or resume mode, load the work profile, or add workflow receipts.
+Utilities are available to the model but optional, not always-on rules.
 
-## Cursor
+For a previously active engineering task, a utility turn leaves its state paused.
+The next separately requested engineering action can resume it. Ordinary knowledge
+questions do not enter mode merely because the agent is running inside a repository.
 
-Install as a local Cursor plugin (Cursor skips symlinks that point outside
-`~/.cursor/plugins/local`, so this is a real copy):
+## Operating principle
+
+Establish the requested outcome and proof. Ground consequential decisions in the
+actual project or primary sources. Do the smallest complete work. Verify the final
+relevant artifact. State what was not established. Use extra process only when it
+addresses a particular uncertainty, risk or coordination need.
+
+Start by asking the host to use the `r-stack-mode` skill. The router reads project
+constraints, chooses one primary playbook and adds only relevant capabilities.
+The active host retains permissions, executors, resource limits and isolation.
+Native skill syntax varies by host; installing files alone does not demonstrate
+that the host loaded or invoked them.
+
+## What changed in rc.2
+
+- Sixteen new standalone skills, plus a standalone-safe revision of existing `reflect`.
+- A dedicated `research` utility and broader general-knowledge `teach`, `how` and `why`.
+- An explicit utility exception in the entry rule, router and engineering profile.
+- No new mandatory utility phases, model defaults, automatic editing or publishing.
+- A tested decision-log helper, static toolbox checks and live interaction cases.
+
+The evidence recorder, receipt semantics and engineering playbooks are unchanged
+from rc.1. See [the toolbox guide](docs/TOOLBOX.md) and its validation limits.
+
+## What changed from 0.1
+
+- A smaller contract-first entry path, explicit capability gaps, bounded recovery
+  after repeated unproductive attempts, and honest review provenance.
+- Six optional lenses: UI/UX, research, state/integration, security,
+  migration/delivery and data analysis. No expansion into dozens of default phases.
+- Schema-2 graphs and receipts, actual command capture, per-claim final-state
+  identity checks, artifact hashes and negative tests for false completion.
+- Safer Cursor copying, a portable entry rule, version-consistent package checks,
+  executable smoke fixtures and an outcome/cost evaluation protocol.
+
+Read [the evidence contract](skills/r-stack-mode/references/evidence-contract.md),
+[worked examples](docs/WORKED-EXAMPLES.md), [evaluation protocol](docs/EVALUATION.md),
+and [migration notes](docs/MIGRATION-0.2.md).
+
+## Workflow versus enforcement
+
+**Instruction mode** guides the agent and works with its ordinary tools.
+**Capture mode** records real checks and verifies record consistency using the
+optional Python scripts. **Host-enforced completion** requires the host or CI to
+run a protected gate and refuse unsupported closure. This plugin does not install
+universal stop hooks, a scheduler, a sandbox or a new agent loop.
+
+The recorder requires Python 3.10+ and Git for local snapshots. POSIX process
+cleanup was exercised in the supplied tests; native Windows descendant handling
+and live host loading were not. Inspection and judgment records can preserve
+source or screenshot attachments, but the scripts do not judge images or prove
+semantic correctness. A malicious or mistaken agent that owns the checks and
+records can still produce self-consistent bad evidence.
+
+## Local checks
 
 ```bash
-~/plugins/r-stack/scripts/install-cursor.sh
+python3 -B -m unittest discover -s tests -v
+python3 scripts/check_portability.py
+python3 scripts/check_toolbox.py
+python3 evals/smoke.py self-test
 ```
 
-Then reload the window (`Developer: Reload Window`). Confirm **r-stack** under
-Customize → Plugins. Slash commands: `/r-stack`, `/investigate`, `/verify`,
-`/review`.
+The original schema-1 JSON fixtures remain historical examples; they are not the
+new test suite and must not be reused to certify schema-2 completion.
 
-## How it is organized
+The runnable [recorded-check example](examples/recorded-check/README.md) shows the
+capture path without any model calls. Evidence tools execute the commands in a
+contract: review those commands and use the host's permissions and sandbox.
 
-- [`WORK_PROFILE.md`](WORK_PROFILE.md) holds stable personal engineering
-  preferences.
-- [`r-stack-mode`](skills/r-stack-mode/SKILL.md) routes the task and enforces
-  alignment, rigor, orchestration boundaries, and completion.
-- Project `AGENTS.md` files remain authoritative for local architecture,
-  commands, permissions, and delivery policy.
-- Project overlays add repository-specific verification without forking the
-  general workflow.
+## Installing the supplied upgrade
 
-## Skills
+The accompanying bundle is a cumulative overlay, not a complete standalone clone.
+Its applicator supports the audited 0.1 base and the exact supplied rc.1 files. It
+defaults to a dry run, rejects unexpected target edits, and retains recovery copies.
+It never commits, pushes or resets your repository. Read the bundle README and review
+the proposed file list. Unrecognized revisions require a reviewed port.
 
-| Skill | Responsibility |
-| --- | --- |
-| `r-stack-mode` | Route the task and enforce phase gates. |
-| `investigate` | Trace mechanics, history, and falsifiable causes. |
-| `shape` | Resolve decision dependencies and domain meaning. |
-| `architect` | Settle caller usage, state ownership, interfaces, and seams. |
-| `prototype` | Answer one design question with a disposable experiment. |
-| `orchestrate` | Partition work, assign one writer, and reconcile receipts. |
-| `verify` | Map acceptance claims to fresh consequential-path evidence. |
-| `review` | Independently assess intent, engineering, and proof. |
-| `resume` | Reconcile summaries with live state and continue exactly once. |
-| `reflect` | Promote repeated failures into the narrowest effective control. |
-| `workflow-eval` | Compare workflow variants under isolated, blinded runs. |
+For an existing local Cursor plugin copy, `scripts/install-cursor.sh` stages a
+replacement, retains the prior copy, and refuses unrecognized targets. Running
+it from the installed location does not delete that location. A successful copy
+is not a successful native Cursor loading test.
 
-## Playbooks
+## Provenance
 
-The router contains fourteen playbooks:
-
-1. investigation
-2. shaping
-3. design
-4. plan
-5. bug fix
-6. feature
-7. refactor
-8. performance
-9. prototype
-10. operational change
-11. review
-12. resume
-13. long run
-14. workflow evaluation
-
-`resume` and `long run` can modify another primary playbook. Rigor scales from
-Direct to Deliberate to Program according to uncertainty, reversibility, and
-impact—not task size alone.
-
-## Parallel work contract
-
-R-Stack uses stable decision, acceptance, work, and evidence identifiers
-(`D-###`, `A-###`, `W-###`, `E-###`). The coordinator owns decomposition,
-dependencies, write ownership, pilot selection, evidence checking, synthesis,
-and the final verdict. Workers return structured receipts; their claims are not
-accepted until the coordinator checks the cited artifact and final diff.
-
-The included validators reject dependency cycles, unordered write conflicts,
-missing acceptance-to-proof mappings, incomplete receipts, stale fingerprints,
-and executor-policy fields in a work graph.
-
-## Status
-
-This is v0. The structure and validators are usable, but broad superiority is
-not claimed from a single smoke case. Promote workflow changes only after the
-blinded evaluation playbook passes across repeated representative tasks.
-
-See [`UPSTREAM.md`](UPSTREAM.md) for the exact PStack and Matt Pocock source
-revisions and licenses used as design inputs.
+R-Stack remains derived from its existing P-stack and Matt Pocock skill
+inspirations. Preserve `UPSTREAM.md`, `LICENSE`, and `licenses/` from the original
+repository. This revision adds independent analysis and code; it does not claim
+upstream authors reviewed or endorsed it. See `docs/AUDIT-PROVENANCE.md`.

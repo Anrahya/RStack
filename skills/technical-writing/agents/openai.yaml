@@ -1,0 +1,6 @@
+interface:
+  display_name: "Technical writing"
+  short_description: "Write or review documentation, guides, RFCs and explanations"
+  default_prompt: "Use $technical-writing for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

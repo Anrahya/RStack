@@ -1,67 +1,58 @@
 ---
 name: verify
-description: Prove an engineering outcome against the final workspace using the affected user, delivery, persistence, integration, or performance path. Use after implementation, before handoff, or whenever a passing test may not cover the consequential behavior.
+description: Check every acceptance claim against the final relevant artifact through the actual consumer or system boundary. Use after changes, before delivery, or when existing checks might provide proxy or stale evidence.
 ---
 
 # Verify
 
-Derive proof from the task contract and project instructions. Verification is a
-claim-to-evidence mapping, not a command dump.
+## Establish the oracle
 
-## Pin the artifact
+Read the original acceptance contract and project gates. For each claim, name
+the observable result, independently justified expected value, actual boundary
+exercised and a condition the check does not cover. A test derived from the same
+implementation can reproduce its mistake. Do not weaken assertions, refresh
+baselines or remove a protected check simply to obtain green.
 
-Identify the final tree, worktree content fingerprint, build, deployed revision,
-or live-state identity and the last relevant mutation. Earlier checks remain
-supporting evidence but cannot prove a later state.
+Choose the smallest sufficient proof: a user interaction, public API call,
+persistence read-back, restart, captured replay, differential comparison,
+measurement or source-supported analysis. Compilation is not runtime proof;
+a screenshot is not interaction proof; a successful HTTP response is not durable
+storage proof. Load the relevant domain lens for material negative paths.
 
-## Build the proof map
+For a bug, preserve an honest failing observation and recheck the original
+scenario after the fix. Do not fabricate a red test when the original failure
+cannot be reproduced. For a new guardrail, demonstrate that a representative
+violation is rejected, restore the intended state and pass again.
 
-Map every `A-###` acceptance claim and protected behavior to the strongest
-practical check:
+## Make the surface reachable
 
-- user or delivery path for observable behavior;
-- read-back after persistence;
-- retry, duplicate delivery, cancellation, or restart for durable behavior;
-- recorded input replay for parsing and migration;
-- frozen baseline and final measurement for performance;
-- focused tests for local branches, followed by required project gates.
+Prefer an existing project harness. When repeated verification has no reliable
+entry point, follow [the project-driver recipe](../r-stack-mode/references/project-driver.md).
+A generated driver is a draft until its own launch, readiness, drive, evidence
+and cleanup steps have been exercised. Test scaffolding must be identified and
+must not bypass the changed production boundary.
 
-Call code the way its real consumer does and compare against an independently
-known result. A helper test cannot prove a boundary it bypasses. Compilation is
-not runtime evidence.
+## Capture final-state evidence
 
-For a bug, retain failing-then-passing evidence and rerun the original
-unminimized scenario. Reconcile the proof map with the contract's behavior
-partitions: require an unchanged control and every materially different
-transition, not just the reported example. For a new guardrail, prove it bites:
-pass, introduce one representative violation, observe failure, remove the
-violation, pass again.
+Identify the final worktree, build, deployed revision or live target. Pin the
+inputs and relevant environment. Record the command or action, expected and
+observed results, output artifacts, coverage limits and identity after the last
+relevant edit. Use native tool records where available.
 
-## Drive and capture
+When using R-Stack's optional Python recorder, follow
+[the evidence contract](../r-stack-mode/references/evidence-contract.md).
+`--structure-only` validates formatting, never completion. Historical failed
+runs are useful support, not proof of the final state. Every required claim needs
+its own current successful evidence; one fresh check cannot freshen the others.
 
-Prefer the project's existing harness. If no repeatable path reaches a recurring
-consequential surface, create the smallest project-local launch, doctor, drive,
-evidence, and cleanup recipe allowed by project policy, then execute it once
-before trusting it.
+## Decide
 
-Capture for every claim:
+Check the final diff for scope drift and recheck identity after verification.
+Any relevant later mutation requires fresh affected checks and the project's
+required final gate. Do not blindly rerun unrelated work; explain reused proof.
 
-- `E-###` identifier;
-- command or action and relevant input;
-- expected signal and observed result;
-- artifact or evidence location;
-- exact fingerprint;
-- coverage boundary and uncovered condition.
-
-Clean up only the processes and scratch state created by the run. Preserve proof
-artifacts.
-
-## Freshness gate
-
-Recheck the workspace or live identity after validation. Any later mutation
-invalidates affected receipts. Rerun only the checks whose inputs changed, plus
-the project's required final gate.
-
-Return `PASS`, `FAIL`, or `INCONCLUSIVE` with the proof map. `INCONCLUSIVE`
-means a named claim remains unproven; it does not imply the work is safe to
-deliver. Never report broader coverage than the evidence demonstrates.
+Return `PASS`, `FAIL`, or `INCONCLUSIVE`, with the acceptance-to-evidence map and
+uncovered conditions. Missing browser, credentials, fixtures or a reproducible
+failure must remain visible. A blocked check is not an inferred pass. Semantic
+adequacy and aesthetic judgment still require inspection; a receipt hash cannot
+establish them.

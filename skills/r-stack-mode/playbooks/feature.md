@@ -1,27 +1,21 @@
 # Feature
 
-1. **Contract.** State the new observable behavior, protected behavior,
-   acceptance claims, authority, and smallest complete vertical slice.
-2. **Ground.** Invoke `investigate` over the affected path, existing callers,
-   project rules, and verification seams. Invoke `shape` when product behavior
-   or domain terms remain ambiguous.
-3. **Design.** Name the central data shape and its owner. Invoke `architect`
-   when the work creates or moves a public, persistence, process, concurrency,
-   authority, security, or integration boundary. Invoke `prototype` for an
-   observable fork that evidence can settle cheaply.
-4. **Slice.** Divide non-atomic work into narrow end-to-end units, not horizontal
-   layers. Each unit owns acceptance claims, dependencies, writable scope, and a
-   proof that can pass before the next dependent unit begins.
-5. **Execute.** Keep an atomic slice local. Invoke `orchestrate` for independent
-   reconnaissance, complete design alternatives, or disjoint implementation
-   units. Settle shared contracts first and give each mutable surface one writer.
-6. **Accept units.** Run each unit's narrow proof and inspect every accepted diff
-   and evidence receipt. Reject stale assumptions, hidden scope expansion, and
-   reports without checkable evidence.
-7. **Prove final state.** Invoke `verify` after the final mutation. Map every
-   acceptance claim and protected behavior to fresh evidence on the converged
-   tree.
-8. **Review and close.** For deliberate risk, invoke `review`. Report the
-   behavior delivered, proof, exact revision or fingerprint, tradeoffs, and
-   uncovered risk.
-
+1. **Contract.** Define observable acceptance, protected behavior, authority and
+   the smallest complete user or caller path. Freeze what success means.
+2. **Ground.** Invoke `investigate` on the affected path and project instructions.
+   Use `shape` for genuine product ambiguity. Load a domain lens only when it
+   adds a material observation or failure partition.
+3. **Design.** Name the data shape and state owner. Invoke `architect` when a
+   public, persistence, concurrency, authority or integration boundary changes.
+   For UI work, establish experience and visual criteria, not only module design.
+   Use `prototype` for a consequential observable uncertainty.
+4. **Implement.** Keep an atomic task local. For larger work, choose vertical
+   units with decidable acceptance and exclusive write ownership. Invoke
+   `orchestrate` only when decomposition earns its cost. Settle shared contracts
+   before dependent writes.
+5. **Prove.** Invoke `verify` on the converged final artifact. Exercise the real
+   boundary and relevant negative states. Unit-local passes do not substitute
+   for integration proof.
+6. **Review and close.** Apply risk-appropriate review, inspect the final diff,
+   recheck changes caused by review and report delivered behavior, proof,
+   identity, tradeoffs and uncovered conditions.

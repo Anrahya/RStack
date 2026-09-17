@@ -1,254 +1,228 @@
 #!/usr/bin/env python3
-"""Validate an R-Stack JSON work graph before dispatch."""
-
+"""Check declared work-graph consistency. This is not a scheduler or sandbox."""
 from __future__ import annotations
 
 import argparse
 import json
 import re
 import sys
-from collections.abc import Iterable
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
-
-WORK_ID = re.compile(r"^W-[0-9]{3,}$")
-ACCEPTANCE_ID = re.compile(r"^A-[0-9]{3,}$")
-DECISION_ID = re.compile(r"^D-[0-9]{3,}$")
-PLACEHOLDER = re.compile(r"\b(?:TODO|TBD)\b|\[TODO", re.IGNORECASE)
-FORBIDDEN_KEYS = {
-    "model",
-    "models",
-    "model_name",
-    "reasoning",
-    "reasoning_effort",
-    "price",
-    "pricing",
-    "budget",
-}
-STRING_FIELDS = {"role", "outcome", "parent_outcome", "authority", "report"}
-LIST_FIELDS = {
-    "read",
-    "write",
-    "excluded",
-    "context",
-    "accepted_decisions",
-    "known_facts",
-    "assumptions_to_test",
-    "requires",
-    "produces_for",
-    "stop_if",
-    "forbidden",
-}
+WORK_ID = re.compile(r"W-[0-9]{3,}\Z")
+ACCEPTANCE_ID = re.compile(r"A-[0-9]{3,}\Z")
+DECISION_ID = re.compile(r"D-[0-9]{3,}\Z")
+KINDS = {"execution", "inspection", "judgment"}
+EXECUTOR_KEYS = {"model", "models", "model_name", "reasoning_effort", "pricing"}
 
 
-def add(errors: list[str], location: str, message: str) -> None:
-    errors.append(f"{location}: {message}")
+def nonempty(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
 
 
-def walk(value: Any, location: str = "$") -> Iterable[tuple[str, str, Any]]:
-    if isinstance(value, dict):
-        for key, child in value.items():
-            yield location, str(key), child
-            yield from walk(child, f"{location}.{key}")
-    elif isinstance(value, list):
-        for index, child in enumerate(value):
-            yield from walk(child, f"{location}[{index}]")
+def strings(value: Any) -> bool:
+    return isinstance(value, list) and all(nonempty(x) for x in value)
 
 
-def normalized_key(key: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "_", key.lower()).strip("_")
+def identifier(value: Any, pattern: re.Pattern[str]) -> bool:
+    return isinstance(value, str) and pattern.fullmatch(value) is not None
 
 
-def check_forbidden(errors: list[str], graph: Any) -> None:
-    for location, key, value in walk(graph):
-        if normalized_key(key) in FORBIDDEN_KEYS:
-            add(errors, location, f"forbidden executor-policy key {key!r}")
-        if isinstance(value, str) and PLACEHOLDER.search(value):
-            add(errors, f"{location}.{key}", "contains unresolved placeholder")
-
-
-def require_string(errors: list[str], unit: dict[str, Any], field: str, where: str) -> None:
-    value = unit.get(field)
-    if not isinstance(value, str) or not value.strip():
-        add(errors, where, f"{field} must be a non-empty string")
-
-
-def require_list(errors: list[str], unit: dict[str, Any], field: str, where: str) -> None:
-    value = unit.get(field)
-    if not isinstance(value, list):
-        add(errors, where, f"{field} must be a list")
-    elif any(not isinstance(item, str) or not item.strip() for item in value):
-        add(errors, where, f"{field} entries must be non-empty strings")
+def normalize_path(value: str) -> str:
+    """Conservative, portable ownership paths; no globs or parent traversal."""
+    if not nonempty(value) or value != value.strip():
+        raise ValueError("ownership path must be non-empty without surrounding whitespace")
+    if any(x in value for x in ('\\', '\0', '*', '?', '[', ']', ':')):
+        raise ValueError("ownership paths must be literal relative POSIX paths")
+    p = PurePosixPath(value)
+    if p.is_absolute() or value.startswith('~') or '..' in p.parts:
+        raise ValueError("absolute paths, home expansion and parent traversal are forbidden")
+    return str(p)
 
 
 def path_conflict(left: str, right: str) -> bool:
-    left = left.strip().rstrip("/")
-    right = right.strip().rstrip("/")
-    if not left or not right or left.upper() == "NONE" or right.upper() == "NONE":
-        return False
-    return left == right or left.startswith(right + "/") or right.startswith(left + "/")
+    # Case folding intentionally serializes case-only aliases even on Linux.
+    a, b = normalize_path(left).casefold(), normalize_path(right).casefold()
+    return a == '.' or b == '.' or a == b or a.startswith(b + '/') or b.startswith(a + '/')
 
 
 def transitive_dependencies(units: dict[str, dict[str, Any]], work_id: str) -> set[str]:
     found: set[str] = set()
-    frontier = list(units[work_id].get("requires", []))
+    frontier = list(units[work_id]['requires'])
     while frontier:
-        dependency = frontier.pop()
-        if dependency in found or dependency not in units:
+        item = frontier.pop()
+        if item in found or item not in units:
             continue
-        found.add(dependency)
-        frontier.extend(units[dependency].get("requires", []))
+        found.add(item)
+        frontier.extend(units[item]['requires'])
     return found
 
 
-def check_graph(graph: Any) -> list[str]:
-    errors: list[str] = []
+def check_graph(graph: Any, repo_root: Path | None = None) -> list[str]:
     if not isinstance(graph, dict):
-        return ["$: graph must be a JSON object"]
-
-    check_forbidden(errors, graph)
-    raw_units = graph.get("units")
+        return ['$: graph must be an object']
+    errors: list[str] = []
+    def err(where: str, message: str) -> None:
+        errors.append(f'{where}: {message}')
+    if type(graph.get('schema_version')) is not int or graph['schema_version'] != 2:
+        err('$', 'schema_version must be 2; see skills/r-stack-mode/references/evidence-contract.md for migration')
+    if not nonempty(graph.get('outcome')):
+        err('$', 'outcome must name the original requested result')
+    declared = graph.get('acceptance_ids')
+    if not isinstance(declared, list) or not declared or not all(identifier(x, ACCEPTANCE_ID) for x in declared):
+        err('$', 'acceptance_ids must be a non-empty list of A-### identifiers')
+        declared = []
+    elif len(set(declared)) != len(declared):
+        err('$', 'duplicate acceptance_ids')
+    for key in EXECUTOR_KEYS.intersection(graph):
+        err('$', f'executor configuration {key!r} belongs to the host')
+    raw_units = graph.get('units')
     if not isinstance(raw_units, list) or not raw_units:
-        add(errors, "$", "units must be a non-empty list")
-        return errors
-
+        return errors + ['$: units must be a non-empty list']
     units: dict[str, dict[str, Any]] = {}
-    acceptance_owner: dict[str, str] = {}
-
-    for index, raw_unit in enumerate(raw_units):
-        where = f"$.units[{index}]"
-        if not isinstance(raw_unit, dict):
-            add(errors, where, "unit must be an object")
-            continue
-        work_id = raw_unit.get("id")
-        if not isinstance(work_id, str) or not WORK_ID.fullmatch(work_id):
-            add(errors, where, "id must match W-###")
-            continue
-        if work_id in units:
-            add(errors, where, f"duplicate work id {work_id}")
-            continue
-        units[work_id] = raw_unit
-
-        for field in STRING_FIELDS:
-            require_string(errors, raw_unit, field, where)
-        for field in LIST_FIELDS:
-            require_list(errors, raw_unit, field, where)
-
-        acceptance = raw_unit.get("acceptance")
-        if not isinstance(acceptance, list) or not acceptance:
-            add(errors, where, "acceptance must be a non-empty list")
-            continue
-        for acceptance_index, claim in enumerate(acceptance):
-            claim_where = f"{where}.acceptance[{acceptance_index}]"
-            if not isinstance(claim, dict):
-                add(errors, claim_where, "acceptance claim must be an object")
-                continue
-            claim_id = claim.get("id")
-            if not isinstance(claim_id, str) or not ACCEPTANCE_ID.fullmatch(claim_id):
-                add(errors, claim_where, "id must match A-###")
-                continue
-            if claim_id in acceptance_owner:
-                add(errors, claim_where, f"{claim_id} already owned by {acceptance_owner[claim_id]}")
-            acceptance_owner[claim_id] = work_id
-            if not isinstance(claim.get("predicate"), str) or not claim["predicate"].strip():
-                add(errors, claim_where, "predicate must be a non-empty string")
-            verify = claim.get("verify")
-            if not isinstance(verify, dict):
-                add(errors, claim_where, "verify must be an object")
-            else:
-                for field in ("action", "expected"):
-                    value = verify.get(field)
-                    if not isinstance(value, str) or not value.strip():
-                        add(errors, claim_where, f"verify.{field} must be non-empty")
-
+    owners: dict[str, str] = {}
     decision_ids: set[str] = set()
-    raw_decisions = graph.get("decisions", [])
-    if not isinstance(raw_decisions, list):
-        add(errors, "$", "decisions must be a list")
-        raw_decisions = []
-    for index, decision in enumerate(raw_decisions):
-        where = f"$.decisions[{index}]"
-        if not isinstance(decision, dict):
-            add(errors, where, "decision must be an object")
+    decisions = graph.get('decisions', [])
+    if not isinstance(decisions, list):
+        err('$', 'decisions must be a list')
+        decisions = []
+    for i, d in enumerate(decisions):
+        if not isinstance(d, dict) or not identifier(d.get('id'), DECISION_ID) or not nonempty(d.get('text')):
+            err(f'$.decisions[{i}]', 'decision needs D-### id and text')
             continue
-        decision_id = decision.get("id")
-        if not isinstance(decision_id, str) or not DECISION_ID.fullmatch(decision_id):
-            add(errors, where, "id must match D-###")
+        if d['id'] in decision_ids:
+            err('$.decisions', f'duplicate decision {d["id"]}')
+        decision_ids.add(d['id'])
+    for i, raw in enumerate(raw_units):
+        where = f'$.units[{i}]'
+        if not isinstance(raw, dict) or not identifier(raw.get('id'), WORK_ID):
+            err(where, 'unit must be an object with W-### id')
             continue
-        if decision_id in decision_ids:
-            add(errors, where, f"duplicate decision id {decision_id}")
-        decision_ids.add(decision_id)
-        if not isinstance(decision.get("text"), str) or not decision["text"].strip():
-            add(errors, where, "text must be a non-empty string")
-
-    for work_id, unit in units.items():
-        for dependency in unit.get("requires", []):
-            if dependency not in units:
-                add(errors, work_id, f"unknown dependency {dependency}")
-            elif dependency == work_id:
-                add(errors, work_id, "unit cannot depend on itself")
-        for consumer in unit.get("produces_for", []):
-            if consumer.lower() != "final" and consumer not in units:
-                add(errors, work_id, f"unknown produces_for target {consumer}")
-        for decision_id in unit.get("accepted_decisions", []):
-            if decision_id not in decision_ids:
-                add(errors, work_id, f"unknown accepted decision {decision_id}")
-
-    for work_id in units:
-        dependencies = transitive_dependencies(units, work_id)
-        if work_id in dependencies:
-            add(errors, work_id, "dependency cycle detected")
-
-    work_ids = sorted(units)
-    dependency_cache = {
-        work_id: transitive_dependencies(units, work_id) for work_id in work_ids
-    }
-    for left_index, left_id in enumerate(work_ids):
-        for right_id in work_ids[left_index + 1 :]:
-            ordered = (
-                left_id in dependency_cache[right_id]
-                or right_id in dependency_cache[left_id]
-            )
-            if ordered:
+        wid = raw['id']
+        if wid in units:
+            err(where, f'duplicate work id {wid}')
+            continue
+        unit = dict(raw)
+        units[wid] = unit
+        for key in EXECUTOR_KEYS.intersection(raw):
+            err(where, f'executor configuration {key!r} belongs to the host')
+        if 'role' in raw and not nonempty(raw['role']):
+            err(where, 'role must be a non-empty string when supplied')
+        for field in ('outcome', 'authority'):
+            if not nonempty(raw.get(field)):
+                err(where, f'{field} must be non-empty')
+        for field in ('write', 'requires'):
+            if not strings(raw.get(field)):
+                err(where, f'{field} must be a list of non-empty strings; use [] for none')
+                unit[field] = []
+        for field in ('context', 'stop_if'):
+            if not strings(raw.get(field)) or not raw[field]:
+                err(where, f'{field} must be a non-empty list of actionable strings')
+                unit[field] = []
+        for field in ('read', 'excluded', 'accepted_decisions', 'produces_for', 'write_resources', 'known_facts', 'assumptions_to_test', 'forbidden'):
+            if not strings(raw.get(field, [])):
+                err(where, f'{field} must be a list of non-empty strings')
+                unit[field] = []
+        for field in ('write', 'excluded'):
+            clean: list[str] = []
+            for value in unit.get(field, []):
+                try:
+                    normalized = normalize_path(value)
+                    clean.append(normalized)
+                    if repo_root is not None:
+                        root = repo_root.resolve()
+                        candidate = root / normalized
+                        # Symlink aliases are rejected rather than pretending to lock their targets.
+                        while candidate != root:
+                            if candidate.is_symlink():
+                                raise ValueError('symlink ownership needs a host-resolved canonical scope')
+                            candidate = candidate.parent
+                except ValueError as exc:
+                    err(where, f'{field} {value!r}: {exc}')
+            unit[field] = clean
+        for a in unit['write']:
+            for b in unit.get('excluded', []):
+                if path_conflict(a, b):
+                    err(where, f'write scope {a!r} overlaps excluded scope {b!r}')
+        if raw.get('role') in ('investigator', 'reviewer', 'verifier') and (unit['write'] or unit.get('write_resources')):
+            err(where, 'read-only role cannot own source or external mutations')
+        acceptance = raw.get('acceptance')
+        if not isinstance(acceptance, list) or not acceptance:
+            err(where, 'acceptance must be a non-empty list')
+            continue
+        for j, claim in enumerate(acceptance):
+            cw = f'{where}.acceptance[{j}]'
+            if not isinstance(claim, dict) or not identifier(claim.get('id'), ACCEPTANCE_ID):
+                err(cw, 'claim must have an A-### id')
                 continue
-            for left_path in units[left_id].get("write", []):
-                for right_path in units[right_id].get("write", []):
-                    if path_conflict(left_path, right_path):
-                        add(
-                            errors,
-                            "$.units",
-                            f"unordered write conflict: {left_id} and {right_id} both own "
-                            f"{left_path!r}/{right_path!r}",
-                        )
-
+            aid = claim['id']
+            if aid in owners:
+                err(cw, f'{aid} already owned by {owners[aid]}')
+            owners[aid] = wid
+            if not nonempty(claim.get('predicate')):
+                err(cw, 'predicate must be non-empty')
+            verify = claim.get('verify')
+            if not isinstance(verify, dict):
+                err(cw, 'verify must be an object')
+                continue
+            kind = verify.get('kind')
+            if not isinstance(kind, str) or kind not in KINDS:
+                err(cw, f'verify.kind must be one of {sorted(KINDS)}')
+            for field in ('action', 'expected'):
+                if not nonempty(verify.get(field)):
+                    err(cw, f'verify.{field} must be non-empty')
+            if kind == 'execution' and (not strings(verify.get('argv')) or not verify['argv']):
+                err(cw, 'execution proof requires exact non-empty verify.argv; no shell interpolation')
+    for wid, unit in units.items():
+        for dependency in unit['requires']:
+            if dependency not in units:
+                err(wid, f'unknown dependency {dependency}')
+        for decision in unit.get('accepted_decisions', []):
+            if decision not in decision_ids:
+                err(wid, f'unknown decision {decision}')
+    dependencies = {wid: transitive_dependencies(units, wid) for wid in units}
+    for wid, deps in dependencies.items():
+        if wid in deps:
+            err(wid, 'dependency cycle detected')
+        for consumer in units[wid].get('produces_for', []):
+            if consumer == 'final':
+                continue
+            if consumer not in units or wid not in dependencies.get(consumer, set()):
+                err(wid, f'consumer {consumer!r} must depend on this producer')
+    ids = sorted(units)
+    for i, left in enumerate(ids):
+        for right in ids[i + 1:]:
+            if left in dependencies[right] or right in dependencies[left]:
+                continue
+            for a in units[left]['write']:
+                for b in units[right]['write']:
+                    if path_conflict(a, b):
+                        err('$.units', f'unordered write conflict: {left}:{a} / {right}:{b}')
+            shared = set(units[left].get('write_resources', [])) & set(units[right].get('write_resources', []))
+            if shared:
+                err('$.units', f'unordered external-resource conflict: {sorted(shared)}')
+    if set(declared) != set(owners):
+        err('$', f'contract coverage mismatch: unassigned={sorted(set(declared)-set(owners))}, undeclared={sorted(set(owners)-set(declared))}')
     return errors
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("graph", type=Path)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('graph', type=Path)
+    parser.add_argument('--repo', type=Path, help='also reject existing symlink ownership aliases')
     args = parser.parse_args()
-
     try:
-        graph = json.loads(args.graph.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        print(f"work graph is unreadable: {exc}", file=sys.stderr)
+        graph = json.loads(args.graph.read_text(encoding='utf-8'))
+        errors = check_graph(graph, args.repo)
+    except (OSError, UnicodeError, ValueError) as exc:
+        print(f'graph input is unreadable: {exc}', file=sys.stderr)
         return 2
-
-    errors = check_graph(graph)
     if errors:
-        print("work graph validation failed:")
-        for error in errors:
-            print(f"- {error}")
+        print('work graph rejected:\n' + '\n'.join(f'- {e}' for e in errors))
         return 1
-
-    print(
-        f"work graph validation passed "
-        f"({len(graph['units'])} units, {len(graph.get('decisions', []))} decisions)"
-    )
+    print('work graph consistent; actual authority, locking and scheduling remain host responsibilities')
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "outcome": "Return sorted unique values without mutating caller input.",
+  "acceptance_ids": [
+    "A-001"
+  ],
+  "units": [
+    {
+      "id": "W-001",
+      "role": "implementer",
+      "outcome": "Implement the public function.",
+      "authority": "Edit app.py only; no external actions.",
+      "context": [
+        "app.py",
+        "check.py",
+        "The outcome and acceptance predicate in this graph."
+      ],
+      "stop_if": [
+        "The requested public behavior is ambiguous or check.py cannot execute."
+      ],
+      "write": [
+        "app.py"
+      ],
+      "requires": [],
+      "acceptance": [
+        {
+          "id": "A-001",
+          "predicate": "The public function sorts unique values without mutating its caller input.",
+          "verify": {
+            "kind": "execution",
+            "action": "Run the public behavior assertions.",
+            "expected": "Every public behavior assertion passes.",
+            "argv": [
+              "python3",
+              "check.py"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

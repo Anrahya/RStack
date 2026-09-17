@@ -1,0 +1,6 @@
+interface:
+  display_name: "Maintain a verification skill"
+  short_description: "Audit a project verification recipe and feature map for drift"
+  default_prompt: "Use $maintain-verification-skill for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

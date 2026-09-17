@@ -1,0 +1,6 @@
+interface:
+  display_name: "How"
+  short_description: "Explain how a concept, mechanism, system or code path works"
+  default_prompt: "Use $how for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

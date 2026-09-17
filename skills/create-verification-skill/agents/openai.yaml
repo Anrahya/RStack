@@ -1,0 +1,6 @@
+interface:
+  display_name: "Create a verification skill"
+  short_description: "Build a project-local recipe that launches, drives and"
+  default_prompt: "Use $create-verification-skill for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

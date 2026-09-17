@@ -1,160 +1,59 @@
-# Worker contract
+# Worker contract, schema 2
 
-Use this template for deliberate or program work. A small read-only assignment
-may collapse it to a paragraph only when outcome, scope, proof, and report remain
-explicit.
+A direct assignment needs outcome, context pointers, exclusive write scope,
+authority, acceptance, proof and stop conditions. Do not fill twenty fields with
+`NONE` when a short brief carries the same actionable information.
 
-```text
-WORK_ID: W-###
-ROLE: investigator | designer | implementer | verifier | reviewer | integrator
-
-OUTCOME:
-One bounded, falsifiable result.
-
-PARENT_OUTCOME:
-Why this unit matters.
-
-READ:
-- Exact files, symbols, systems, or evidence sources.
-
-WRITE:
-- Exact paths or mutable resources exclusively owned here, or NONE.
-
-EXCLUDED:
-- Adjacent areas this worker must not change.
-
-CONTEXT:
-- Focused path, symbol, commit, issue, artifact, or runtime pointers.
-
-ACCEPTED_DECISIONS:
-- D-###: Decision and relevant constraint, or NONE.
-
-KNOWN_FACTS:
-- Evidence-backed starting facts.
-
-ASSUMPTIONS_TO_TEST:
-- Assumptions that must not silently become facts, or NONE.
-
-REQUIRES:
-- W-### or NONE.
-
-PRODUCES_FOR:
-- W-###, final integration, or NONE.
-
-AUTHORITY:
-- Exact permitted mutations or external actions. Unlisted actions are excluded.
-
-ACCEPTANCE:
-- A-###: Observable predicate.
-
-VERIFY:
-- A-###: Exact command or action.
-  Expected: Concrete passing signal.
-
-STOP_IF:
-- A dependency or decision is stale.
-- Required authority is missing.
-- Write ownership conflicts.
-- Required proof cannot run.
-- Additional task-specific conditions.
-
-FORBIDDEN:
-- Task-specific prohibited actions, or NONE.
-
-REPORT:
-Return the evidence receipt below.
-```
-
-## Evidence receipt
-
-```text
-WORK_ID: W-###
-STATUS: PASS | ISSUES | BLOCKED | INCONCLUSIVE
-RESULT:
-One-sentence outcome.
-
-EVIDENCE:
-- E-###:
-  ACCEPTANCE: A-###
-  CLAIM:
-  BASIS: observed | supported-inference | proposed | unknown
-  ACTION_OR_SOURCE:
-  OBSERVED_RESULT:
-  LOCATION_OR_ARTIFACT:
-  FINGERPRINT:
-
-MUTATIONS:
-- Exact path or resource and concise change, or NONE.
-
-REJECTED:
-- Hypothesis or alternative and counterevidence, or NONE.
-
-UNCERTAINTY:
-- Remaining uncovered condition, or NONE.
-
-HANDOFF:
-- Integration requirement or exact next action, or NONE.
-```
-
-## Calibration
-
-A good brief lets a worker begin without conversation, names a falsifiable
-outcome, grants bounded authority, and makes completion decidable.
-
-A bad brief says only “handle the backend,” omits protected behavior, lets
-several workers edit the same boundary, or asks for “tests” without the command
-and expected signal.
-
-## Work graph JSON
-
-Use this machine-readable form when the graph has several writers or must survive
-a checkpoint:
+For work crossing contexts or using captured evidence, freeze the original
+acceptance IDs and use this shape. Commands below belong to the supplied runnable
+example, not an instruction to substitute them for an application's real checks.
 
 ```json
 {
-  "decisions": [
-    {
-      "id": "D-001",
-      "text": "One owner settles the shared boundary"
-    }
-  ],
-  "units": [
-    {
-      "id": "W-001",
-      "role": "implementer",
-      "outcome": "Deliver one bounded vertical behavior",
-      "parent_outcome": "Complete the requested feature",
-      "read": ["src/"],
-      "write": ["src/owned-area/"],
-      "excluded": ["src/other-area/"],
-      "context": ["AGENTS.md", "src/owned-area/current.ts"],
-      "accepted_decisions": ["D-001"],
-      "known_facts": ["The current public entry point is run()"],
-      "assumptions_to_test": [],
-      "requires": [],
-      "produces_for": ["final"],
-      "authority": "Edit only the declared write scope",
-      "acceptance": [
-        {
-          "id": "A-001",
-          "predicate": "The public entry point exposes the requested behavior",
-          "verify": {
-            "action": "run the focused public-path check",
-            "expected": "the expected result is observed"
-          }
-        }
-      ],
-      "stop_if": ["The public contract differs from the accepted decision"],
-      "forbidden": [],
-      "report": "Return an R-Stack evidence receipt"
-    }
-  ]
+  "schema_version": 2,
+  "outcome": "Return the stable sorted result without changing the input.",
+  "acceptance_ids": ["A-001"],
+  "units": [{
+    "id": "W-001",
+    "role": "implementer",
+    "outcome": "Implement stable unique sorting.",
+    "authority": "Edit app.py only; no external actions.",
+    "context": ["TASK.md", "app.py", "check.py"],
+    "stop_if": ["The requested behavior is ambiguous or the declared check cannot run."],
+    "write": ["app.py"],
+    "requires": [],
+    "acceptance": [{
+      "id": "A-001",
+      "predicate": "The public function sorts unique values without mutating its caller input.",
+      "verify": {
+        "kind": "execution",
+        "action": "Run the public behavior assertions.",
+        "expected": "Every public behavior assertion passes.",
+        "argv": ["python3", "check.py"]
+      }
+    }]
+  }]
 }
 ```
 
-Validate it from the plugin root:
+Every machine-checked unit requires non-empty `context` pointers and `stop_if`
+conditions. Optional fields include read scopes, excluded paths, accepted decision
+IDs, known facts, assumptions, forbidden actions and
+`write_resources` for explicitly named external resources. Use canonical literal
+relative POSIX paths: no globs or parent traversal. `.` owns the whole repository.
+Case aliases conflict conservatively; symlink write scopes require host-specific
+handling. An empty write list means no source write authority.
 
-```bash
-python3 scripts/check_work_graph.py graph.json
-python3 scripts/check_receipt.py receipt.json --graph graph.json
-```
+Dependencies must be acyclic. Overlapping writes require a dependency order and
+actual host serialization. `produces_for` names consumers that depend on this
+unit; final integration must have its own proof. These checks validate declared
+ownership, not actual permissions or resource locks.
+
+A worker returns a schema-2 receipt with a result and evidence tied to its assigned
+claims. Execution observations should come from the recorder, not hand-written
+success summaries. `PASS` requires current successful proof for every assigned
+claim. `FAIL`, `ISSUES`, `BLOCKED` and `INCONCLUSIVE` remain distinct; unresolved
+blockers must be named. See [the full evidence contract](../../r-stack-mode/references/evidence-contract.md).
+
+The coordinator inspects the final diff and actual artifacts before acceptance.
+It accounts for every dispatched unit and verifies the converged final artifact.

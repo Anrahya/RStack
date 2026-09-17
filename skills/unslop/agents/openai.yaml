@@ -1,0 +1,6 @@
+interface:
+  display_name: "Unslop"
+  short_description: "Edit supplied writing to remove filler, vague claims and"
+  default_prompt: "Use $unslop for the requested help only. Do not start or resume R-Stack mode."
+policy:
+  allow_implicit_invocation: true

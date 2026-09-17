@@ -1,23 +1,17 @@
 # Design
 
-Use when the requested deliverable is an architecture, interface, or ownership
-decision rather than production implementation.
-
-1. **Contract.** State the decision, consumers, constraints, reversibility, and
-   evidence that would distinguish a good design.
-2. **Ground.** Invoke `investigate` across every affected boundary. If intent or
-   domain behavior is unsettled, invoke `shape`. Pass when fixed constraints and
-   open decisions are separated.
-3. **Sketch usage.** Invoke `architect`. Write caller or user usage first, then
-   derive data shapes, ownership, lifecycle, errors, cancellation, retry
-   behavior, module boundaries, and the highest useful test seam.
-4. **Explore.** For a consequential fork, produce at least two structurally
-   distinct complete candidates under one predeclared rubric. Keep them isolated.
-   Invoke `prototype` for questions observation can settle.
-5. **Select.** Compare correctness, state ownership, boundary clarity, invalid
-   states, migration cost, reader load, reversibility, and proof. Synthesize only
-   compatible strengths; do not average contradictory designs.
-6. **Close.** Return the selected usage sketch, core data shape, ownership map,
-   failure behavior, module/API surface, test seam, migration implication, and
-   rejected alternatives. No production code is required unless requested.
-
+1. **Contract.** Establish the consumer or user, decision, constraints and
+   acceptance. Distinguish software architecture, UX direction and visual parity.
+2. **Ground.** Invoke `investigate`; use `shape` for unresolved product intent.
+   Inspect relevant existing behavior and supplied references.
+3. **Develop.** For architecture invoke `architect` and derive ownership, domain
+   shape, lifecycle, failures and interfaces from actual usage. For experience
+   design load the UI and UX lens and define user flow, states and visual rubric.
+4. **Compare.** For a consequential unresolved fork, compare structurally
+   distinct candidates against the same criteria. A supplied approved direction
+   does not require unnecessary alternatives. Use `prototype` for empirical
+   uncertainty within authorized scratch space.
+5. **Select and close.** Return a coherent chosen direction, concrete usage,
+   rationale, rejected alternatives, verification path and remaining uncertainty.
+   Do not claim an unrendered UI was visually inspected or a design-only artifact
+   was proven in production. Implement only when requested.
