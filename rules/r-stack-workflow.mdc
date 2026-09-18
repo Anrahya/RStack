@@ -7,12 +7,9 @@ alwaysApply: true
 
 ## Standalone utility exception
 
-Apply this exception before considering the engineering trigger below. An explicit
-standalone utility request runs only that utility. It does not start or resume
-R-Stack mode, load WORK_PROFILE.md, create a work graph, demand verification receipts,
-or continue earlier engineering work in the same turn. This includes a utility
-used during an active mode task: preserve that task's state and leave it paused.
-The next separately requested engineering action can return to the existing task.
+A standalone utility request runs only that utility, then stops. It does not start
+or resume R-Stack mode or load WORK_PROFILE.md. Preserve a paused engineering task;
+continue it only on a separate request or an explicit mixed request.
 
 Utilities are: `bro`, `unslop`, `technical-writing`, `teach`, `how`, `why`, `research`,
 `recall`, `show-me-your-work`, `automate-me`, `reflect`, `blast-radius`,
@@ -33,7 +30,7 @@ uncompleted task state.
 
 For actual non-trivial engineering implementation, debugging, architecture,
 repository audits or operational changes, load the installed plugin's
-`r-stack-mode` skill and its WORK_PROFILE.md unless the standalone utility
+`r-stack-mode` skill (the `r-stack` command is an alias) and its WORK_PROFILE.md unless the standalone utility
 exception applies. Resolve paths through the host's registry or supplied plugin
 root; do not assume a username or a project-relative installation.
 

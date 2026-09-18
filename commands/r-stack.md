@@ -1,7 +1,8 @@
 ---
 name: r-stack
-description: Route this task through R-Stack mode (alignment, playbook, fresh proof)
+description: "Alias of r-stack-mode; either name enters the same engineering workflow."
 ---
 
-Use R-Stack for this task. Read `skills/r-stack-mode/SKILL.md` and
-`WORK_PROFILE.md` in the r-stack plugin, then follow the selected playbook.
+This command is an alias, not a second route. Resolve the installed plugin's
+`skills/r-stack-mode/SKILL.md` and load it once, then follow that workflow. Do not
+compare the command and skill as alternatives or load both to repeat the work.

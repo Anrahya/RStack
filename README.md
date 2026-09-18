@@ -1,4 +1,4 @@
-# R-Stack 0.2.0-rc.3
+# R-Stack 0.2.0-rc.4
 
 A host-neutral engineering workflow with an optional toolbox for learning, research,
 writing and focused development help. The fourteen engineering routes remain; the
@@ -27,11 +27,30 @@ actual project or primary sources. Do the smallest complete work. Verify the fin
 relevant artifact. State what was not established. Use extra process only when it
 addresses a particular uncertainty, risk or coordination need.
 
-Start by asking the host to use the `r-stack-mode` skill. The router reads project
+Use `r-stack-mode`, or its identical `r-stack` command alias. The router reads project
 constraints, chooses one primary playbook and adds only relevant capabilities.
 The active host retains permissions, executors, resource limits and isolation.
 Native skill syntax varies by host; installing files alone does not demonstrate
 that the host loaded or invoked them.
+
+## What changed in rc.4
+
+- Default to Direct for bounded work; Program is durable coordination, not file count.
+- Discover applicable nested project instructions before changes, with an optional path finder.
+- Establish a baseline per defect; protect dirty work when reconstructing missed evidence.
+- Keep diagnosis mandatory while loading deeper investigation only when useful.
+- Separate maintained regression tests, one-off executable probes and inspected observations.
+- Propagate assertion failures, missing cases and setup failures to meaningful command exits.
+- Split UI repair checks from new design work, with concrete guidance triggers.
+- Clarify the command alias, shorten duplicated guidance and preserve independent utilities.
+- Add researched persistent-browser setup, examples and regression controls, without installing
+  a browser or requiring a particular vendor, receipt system or model.
+- Make ZCode a first-class host with its native manifest, standalone marketplace catalog and
+  cross-host version checks. Claude Code, Codex and Cursor manifests remain supported.
+
+Read [rc.4 changes](docs/RC4-CHANGES.md), [browser setup](docs/BROWSER-SETUP.md),
+[instruction discovery](docs/INSTRUCTION-DISCOVERY.md), [result checks](docs/RESULT-CHECKS.md)
+and [behavioral evaluation cases](docs/WORKFLOW-REGRESSIONS.md).
 
 ## What changed in rc.3
 
@@ -48,8 +67,8 @@ that the host loaded or invoked them.
 - No new mandatory utility phases, model defaults, automatic editing or publishing.
 - A tested decision-log helper, static toolbox checks and live interaction cases.
 
-The evidence recorder, receipt semantics and engineering playbooks are unchanged
-from rc.1. See [the toolbox guide](docs/TOOLBOX.md) and its validation limits.
+In rc.2, the evidence recorder, receipt semantics and engineering playbooks were
+unchanged from rc.1. See [the toolbox guide](docs/TOOLBOX.md) and its validation limits.
 
 ## What changed from 0.1
 
@@ -97,13 +116,30 @@ The runnable [recorded-check example](examples/recorded-check/README.md) shows t
 capture path without any model calls. Evidence tools execute the commands in a
 contract: review those commands and use the host's permissions and sandbox.
 
-## Installing the supplied upgrade
+## Host installation
 
-The accompanying bundle is a cumulative overlay, not a complete standalone clone.
-Its applicator supports the audited 0.1 base and the exact supplied rc.1 files. It
-defaults to a dry run, rejects unexpected target edits, and retains recovery copies.
-It never commits, pushes or resets your repository. Read the bundle README and review
-the proposed file list. Unrecognized revisions require a reviewed port.
+The canonical repository includes native manifests for ZCode, Claude Code, Codex
+and Cursor. All four manifests and the ZCode marketplace catalog carry the same
+release version; `scripts/check_portability.py` rejects drift.
+
+### ZCode
+
+R-Stack is a standalone ZCode marketplace. In **Settings → Plugins**, choose
+**Create → Add marketplace** and enter `https://github.com/Anrahya/RStack`, or
+select this checkout for local development. Install and enable `r-stack`, then
+start a fresh agent session. After changing a local checkout, refresh its
+marketplace before checking for updates. ZCode compares the marketplace entry's
+version with `.zcode-plugin/plugin.json`, so both must be bumped for each release.
+
+### Claude Code and Codex
+
+For a shared local marketplace, place this checkout below a marketplace directory
+whose `.claude-plugin/marketplace.json` points to it, then install `r-stack` through
+the host's plugin manager. Reinstall or refresh after changing the source version.
+The host's installed-version readback, not the presence of copied files, is the
+loading check.
+
+### Cursor
 
 For an existing local Cursor plugin copy, `scripts/install-cursor.sh` stages a
 replacement, retains the prior copy, and refuses unrecognized targets. Running

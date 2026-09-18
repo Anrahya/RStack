@@ -39,6 +39,11 @@ a project-specific note for local facts; a utility or playbook edit for a reusab
 technique; a work profile only for stable preferences. Consolidate conflicts before
 adding prose. Do not make every lesson a new global instruction.
 
+For an engineering retrospective, inspect baseline ordering per defect, applicable
+instructions actually read, final-state claim coverage, maintained versus one-off
+regression checks, cleanup and honestly labeled review type. Measure tool events
+and artifacts rather than treating private reasoning length as cost savings.
+
 Return the few actionable lessons and their limitations. Do not change skills,
 work profiles, memory, issue trackers or source code unless the user requested
 those writes. Existing authorization for a specific change is sufficient. A

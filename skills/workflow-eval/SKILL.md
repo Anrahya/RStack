@@ -5,7 +5,9 @@ description: Test whether a workflow improves delivered outcomes under matched t
 
 # Workflow evaluation
 
-Read [the evaluation protocol](../../docs/EVALUATION.md). Distinguish tests of
+Read [the evaluation protocol](../../docs/EVALUATION.md). Use
+[workflow metrics](../r-stack-mode/references/metrics.md) as retrospective signals,
+not extra execution requirements. Distinguish tests of
 R-Stack's own scripts from trials of an agent using R-Stack. Neither a valid
 receipt nor an attractive demonstration establishes model uplift.
 

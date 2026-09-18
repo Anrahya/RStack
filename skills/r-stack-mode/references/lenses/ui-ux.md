@@ -1,46 +1,50 @@
 # UI and UX
 
-## Establish what good means
+Load this for changed gestures, resizing, focus, motion, loading/error states,
+user flows or visuals. Choose the relevant section. A behavior repair does not
+require redesign, a new rubric or alternative visual directions.
+
+## Behavior repair and interaction verification
+
+Read the component's applicable package instructions and preserve locked design
+choices. List each changed behavior and its material transitions. Exercise the
+original input: wheel and drag are distinct from zoom buttons; keyboard and touch
+are not interchangeable with pointer hover. Include an unchanged control where
+one can expose an overbroad fix.
+
+For resize/responsive changes, cross the actual breakpoint in both directions
+and check retained user state and focus, not just initial page layout. For motion
+changes, check pause, reduced-motion preference and hidden/offscreen behavior
+where the implementation or project contract makes them relevant. For lifecycle
+changes, check unmount, cleanup and pending asynchronous actions at the real
+boundary. Test empty, loading, error and success states that the change can affect.
+Do not assume all applications implement every condition; explain material gaps.
+
+Use keyboard navigation to inspect focus visibility/order and labels; inspect
+narrow layouts for obscured controls. DOM assertions alone do not establish visual
+quality. Capture the relevant action and rendered result, view the image when
+making a visual claim, and inspect console/network failures as supporting evidence.
+A persistent browser controller is a tool, not a test oracle. Distinguish maintained
+tests, one-off assertions and inspected interactions in the final coverage.
+
+## New design or changed visual direction
 
 Name the audience, user task, primary action, existing design language and target
-surface. Inspect supplied references and the running product. Separate faithful
-reproduction from an original direction: visual similarity and design quality
-are different acceptance criteria. Do not replace an approved reference with
-an unrelated style because it is easier to implement.
+surface. Inspect supplied references and the actual product. Separate faithful
+reproduction from original design. Do not replace an approved reference with an
+unrelated style because it is easier to implement.
 
-Describe the intended hierarchy, typography, spacing rhythm, density, color
-roles, imagery and motion using observable choices. Reuse existing tokens and
-components where they fit. For a consequential unresolved direction, compare two
-structurally different sketches under the same brief, not three palette swaps.
-A clear supplied reference does not need redundant alternatives.
+Make hierarchy, typography, spacing, density, color roles and motion concrete.
+Reuse existing tokens/components. For a consequential unresolved direction, compare
+structurally different sketches under one brief; a clear reference does not need
+redundant alternatives. Assess task clarity, coherence, craft and fit to the brief,
+not vague praise. Build the whole relevant user path, including its error states.
 
-Freeze a small rubric before implementation: task clarity, hierarchy, coherence,
-craft and fit to the requested identity. Add positive and negative examples when
-available. “Premium,” “beautiful,” or “no slop” alone is not a grading rule.
+## Visual comparison
 
-## Implement the actual experience
-
-Build a complete user path, including applicable loading, empty, error, success,
-disabled and destructive-action states. Exercise realistic long content and
-narrow viewports. Check keyboard navigation, focus visibility/order, labels,
-contrast and reduced-motion behavior where applicable. Check touch and pointer
-behavior rather than relying on hover alone. Backend error handling is part of
-the experience, not a later cosmetic concern.
-
-## Inspect the rendered result
-
-Launch the real artifact, perform the target actions, and inspect screenshots
-at declared viewports. Capture the action and resulting state; inspect console
-and network failures as supporting evidence. A rendered page without exercised
-controls cannot prove the workflow works. Automated accessibility checks are
-useful but do not replace keyboard and task-flow inspection.
-
-For parity, freeze baseline, viewport, fonts, browser version, data and animation
-state before the edit. Predeclare tolerances for known nondeterministic rendering;
-never relax them after seeing a failure. Investigate meaningful deltas. A zero
-pixel delta under one setup neither proves usability nor covers every state.
-
-Separate functional pass/fail from a design judgment and record who or what made
-that judgment. Compare revisions against the rubric and preserve the best known
-version. Do not keep iterating when the evaluator is only rewarding extra
-complexity. Without visual access, report visual quality as unverified.
+For parity, pin the baseline, viewport, fonts, browser, data and animation state.
+Declare tolerances for known nondeterminism before seeing the result; do not relax
+them to accept a failure. A zero delta in one setup does not prove usability.
+Separate functional pass/fail from aesthetic judgment and say who or what made
+that judgment. Preserve the best supported revision rather than iterating toward
+more complexity. Without visual access, report visual quality as unverified.

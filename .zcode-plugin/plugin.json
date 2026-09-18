@@ -12,5 +12,7 @@
     "verification",
     "architecture",
     "agent-skills"
-  ]
+  ],
+  "skills": "skills",
+  "commands": "commands"
 }

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "rstack-browser": {
+      "type": "stdio",
+      "command": "agent-browser",
+      "args": [
+        "mcp",
+        "--tools",
+        "core,mobile"
+      ]
+    }
+  }
+}

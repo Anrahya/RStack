@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-broken="0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RStack browser-check fixture</title>
+<style>
+body {font:18px system-ui;max-width:800px;margin:30px auto;padding:0 20px;background:#fbfaf6;color:#142333}
+button,input {font:inherit} button {padding:8px 16px}
+:focus-visible {outline:3px solid #925900;outline-offset:5px}
+#surface {height:240px;border:2px solid #487b82;border-radius:12px;margin:24px 0;
+ display:grid;place-content:center;touch-action:none;user-select:none;background:#e8f2f1}
+#surface p {pointer-events:none;text-align:center;margin:8px}
+#status {margin-top:24px;padding:16px;background:white;border:1px solid #ccc}
+.pulse {width:12px;height:12px;display:inline-block;border-radius:50%;background:#356763;animation:pulse 1s infinite alternate}
+.paused .pulse {animation-play-state:paused}
+@keyframes pulse {to {opacity:.25}}
+@media (prefers-reduced-motion:reduce) {.pulse {animation:none}}
+</style>
+<h1>Browser verification fixture</h1>
+<p>Synthetic controls for testing the verification recipe. This is not Renoa.</p>
+<button id="reset">Reset view</button>
+<label><input id="pause" type="checkbox"> Pause motion</label>
+<div id="surface" role="region" aria-label="Map viewport" tabindex="0">
+ <p>Use the mouse wheel to zoom. Drag to pan.</p>
+ <p>Zoom <output id="zoom">100</output>% · Pan <output id="pan">0</output> px</p>
+</div>
+<div id="status"><span class="pulse" aria-hidden="true"></span>
+ <span id="motion">running</span> · Viewport <output id="width"></output> px
+</div>
+<script>
+const broken = document.documentElement.dataset.broken === '1' || new URL(location.href).searchParams.get('broken') === '1';
+const surface = document.querySelector('#surface');
+const pause = document.querySelector('#pause');
+let zoom = 100, pan = 0, dragStart = null, panStart = 0;
+// Offline synthetic mode has no origin storage; persistent-profile proof is omitted there.
+try { pause.checked = localStorage.getItem('paused') === 'true'; } catch { pause.checked = false; }
+function render() {
+ document.querySelector('#zoom').textContent = zoom;
+ document.querySelector('#pan').textContent = pan;
+ document.querySelector('#width').textContent = innerWidth;
+ document.querySelector('#motion').textContent = pause.checked ? 'paused' : 'running';
+ document.body.classList.toggle('paused', pause.checked);
+}
+surface.addEventListener('wheel', e => {e.preventDefault();zoom += e.deltaY < 0 ? 20 : -20;render()}, {passive:false});
+surface.addEventListener('pointerdown', e => {dragStart=e.clientX;panStart=pan;surface.setPointerCapture(e.pointerId)});
+surface.addEventListener('pointermove', e => {if(dragStart!==null){pan=Math.round(panStart+e.clientX-dragStart);render()}});
+surface.addEventListener('pointerup', () => {dragStart=null});
+document.querySelector('#reset').addEventListener('click', () => {zoom=100;pan=0;render()});
+pause.addEventListener('change', () => {
+ try { localStorage.setItem('paused',String(pause.checked)); } catch { /* No storage in offline fixture. */ }
+ render();
+});
+addEventListener('resize', () => {if(broken){zoom=100;pan=0;pause.checked=false}render()});
+render();
+</script>
+</html>

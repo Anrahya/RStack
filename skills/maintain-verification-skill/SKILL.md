@@ -45,3 +45,8 @@ resources, delete other processes, reset user work or silently change baselines.
 Return clean, changed or incomplete for the scoped recipe, plus covered features,
 blocked paths, actual evidence and separate product findings. No automatic PR,
 commit, recurring schedule, extra model panel or R-Stack mode.
+
+Check that documented executable gates really fail on a representative failed
+assertion or missing required case, rather than printing a failure and exiting
+successfully. Preserve user-owned browser sessions and authentication state.
+Report maintained versus one-off coverage without changing product acceptance.

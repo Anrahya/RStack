@@ -136,3 +136,10 @@ to evaluate, not automatically good because they were written by an agent.
 
 Record the complete manifest and retain the unsuccessful runs. A release can
 pass all script tests and still remain on hold for its claimed model uplift.
+
+## Session-driven regression set
+
+See [workflow regression cases](WORKFLOW-REGRESSIONS.md) for the first-session
+failures and [retrospective metrics](../skills/r-stack-mode/references/metrics.md)
+for outcome and process measures. Operational rules live in the playbooks and
+verification procedure; reading metrics is not a normal engineering phase.

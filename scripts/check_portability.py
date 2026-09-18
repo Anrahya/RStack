@@ -22,7 +22,7 @@ def check_package(root: Path, retained: set[str] | None = None) -> list[str]:
             return False
         return path.exists() or relative in retained or any(p.startswith(relative.rstrip('/') + '/') for p in retained)
     versions = []
-    for folder in ('.claude-plugin', '.codex-plugin', '.cursor-plugin'):
+    for folder in ('.claude-plugin', '.codex-plugin', '.cursor-plugin', '.zcode-plugin'):
         path = root / folder / 'plugin.json'
         try:
             manifest = json.loads(path.read_text(encoding='utf-8'))
@@ -46,8 +46,32 @@ def check_package(root: Path, retained: set[str] | None = None) -> list[str]:
                         errors.append(f'{folder}: unresolved interface.{field}')
         except (OSError, ValueError, AttributeError) as exc:
             errors.append(f'{folder}: unreadable manifest: {exc}')
-    if len(versions) == 3 and len(set(versions)) != 1:
-        errors.append('plugin versions disagree across hosts')
+    canonical_version = None
+    if len(versions) == 4:
+        if len(set(versions)) != 1:
+            errors.append('plugin versions disagree across hosts')
+        else:
+            canonical_version = versions[0]
+    marketplace_path = root / 'marketplace.json'
+    try:
+        marketplace = json.loads(marketplace_path.read_text(encoding='utf-8'))
+        entries = marketplace.get('plugins')
+        matching = [entry for entry in entries if isinstance(entry, dict) and entry.get('name') == 'r-stack'] if isinstance(entries, list) else []
+        if marketplace.get('name') != 'r-stack':
+            errors.append('marketplace.json: invalid marketplace name')
+        if len(matching) != 1:
+            errors.append('marketplace.json: expected one r-stack entry')
+        else:
+            entry = matching[0]
+            version = entry.get('version')
+            if not isinstance(version, str) or not VERSION.fullmatch(version):
+                errors.append('marketplace.json: invalid semantic version')
+            elif canonical_version is not None and version.split('+', 1)[0] != canonical_version:
+                errors.append('marketplace version disagrees with host manifests')
+            if entry.get('source') not in ('.', './'):
+                errors.append('marketplace.json: r-stack source must be repository root')
+    except (OSError, ValueError, AttributeError) as exc:
+        errors.append(f'marketplace.json: unreadable manifest: {exc}')
     skills = root / 'skills'
     for path in sorted(skills.glob('*/SKILL.md')):
         text = path.read_text(encoding='utf-8')

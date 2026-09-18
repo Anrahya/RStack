@@ -1,34 +1,59 @@
-# Build a project-local verification driver
+# Reach the application for verification
 
-This is optional reusable capability, not a document to generate on every task.
-Use the project's existing driver first. Create or repair one only when authorized
-and when a missing surface blocks consequential repeated verification.
+Choose per claim, not once for the whole task. Existing maintained tests may
+reach some behavior and miss another boundary. These are three valid paths:
 
-Inspect the repository for its documented launch command, required fixtures,
-ports, authentication, actual user/API/CLI entry points and existing browser or
-integration tests. Resolve observable setup facts from the repository. Do not
-invent selectors, commands or credentials.
+| Available capability | Action |
+| --- | --- |
+| Maintained tests reach the changed behavior | Use or extend them and run required gates. |
+| Tests cannot reach it, but an authorized browser or one-off probe can | Exercise that boundary, capture the result and state retention limits. |
+| No safe available capability reaches it | Keep the claim unverified; do not replace it with an easier proxy. |
 
-A usable driver states:
+Do not add a project dependency or maintained framework merely because one task
+needs a browser. Conversely, do not claim a one-off check satisfies a project's
+mandatory maintained-test policy. Creating or repairing reusable tooling requires
+appropriate task authority. Ordinary authorized scratch work does not require
+ceremonial reapproval.
 
-1. **Launch:** exact authorized command and isolated instance/data ownership.
-2. **Doctor:** read-only evidence of readiness, expected build/version, correct
-   target and valid test authentication. A responding unrelated process is not
-   your instance.
-3. **Drive:** exact stable controls or commands from this application, reaching
-   the real feature and its material failure state.
-4. **Observe:** independently expected result, visible state and relevant durable
-   side effect; evidence locations and environment identity.
-5. **Cleanup:** stop only processes and scratch state this run owns. Keep proof
-   artifacts. Never kill everything with the same process name.
+## Common lifecycle for maintained and one-off drivers
 
-Use existing accessibility labels, test IDs or public paths rather than brittle
-coordinates where possible. Do not make the proof pass by exposing internal
-setters that bypass the changed boundary. Mark necessary fixtures and mocks.
+1. **Launch or attach:** resolve the existing documented command and tools; name
+   the instance, profile/data, port and ownership. Reuse host browser control when
+   available. Preserve user-owned sessions; do not attach to unrelated browsers.
+2. **Check readiness:** verify the expected app/build, URL, available feature and
+   test authentication. HTTP 200 or a listening port alone is insufficient.
+3. **Drive:** use actual app controls and inputs. Include materially different
+   transitions and an unchanged control. Do not bypass the changed boundary.
+4. **Assert and capture:** compare independent expected values; required failures,
+   missing cases and setup errors must fail executable gates. Capture inspected
+   actions separately from executable tests. Record tool/browser versions,
+   viewport, inputs, environment and evidence path. A new gate needs a failing
+   control before its pass is trusted.
+5. **Cleanup or handoff:** stop only owned scratch resources and confirm evidence
+   survives. Never kill everything with the same process name. Preserve a
+   user-owned persistent controller; an intentionally retained owned session
+   needs explicit lifetime and next owner. Do not delete authentication state.
 
-Execute the recipe once, including cleanup, and confirm the proof still exists.
-An unexecuted recipe is a draft. Record which feature was actually exercised;
-executing one mapped feature does not verify every feature. Give maintained
-feature maps an owner and recheck them when routes, commands, authentication or
-build setup change. Never claim installation or runtime compatibility on a host
-that was not exercised.
+One-off scripts stay in an authorized scratch/evidence area, not unsolicited
+product source. Record resolved dependencies and paths; do not depend silently
+on an evictable package cache. State which claims lack a maintained regression
+check and how long their script/evidence will remain. Current proof and future
+regression protection are separate facts.
+
+## Persistent browser control
+
+See [browser setup](../../../docs/BROWSER-SETUP.md) for host-side installation
+choices and session hygiene. A CLI daemon or MCP browser can remain alive across
+steps. Surviving process restart additionally needs supported state/profile
+persistence; surviving a cloud sandbox reset needs retained storage. Those are
+not equivalent guarantees. Use one writer per session and verify the current page
+again after a disconnect or navigation change.
+
+## Maintained project drivers
+
+When repeated work justifies a maintained recipe, derive its launch, readiness,
+selectors, expected values and cleanup from the actual application. Provide no
+invented commands or credentials. Give the feature map an owner. Run the recipe
+end to end once and preserve its evidence; until then it is a draft. Verifying
+one mapped feature does not verify all features. Recheck it after changes to
+routes, authentication, dependencies or build setup.
